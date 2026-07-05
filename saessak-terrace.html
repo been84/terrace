@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>새싹테라스 · Saessak Terrace</title>
+<style>
+  :root{
+    --moss:#3f6b4c; --sprout:#7fe05a; --sprout-bright:#8fd14f;
+    --sun:#f4b942; --sun-deep:#e0922c; --gold:#ffd96b;
+    --bg-deep:#0a1c14; --bg-mid:#112c1e; --bg-card:#163320; --bg-card2:#0f2818;
+    --panel:#10271a; --line:#1f3a26; --line2:#26512f;
+    --cream:#eafbe0; --text-soft:#9bbf9f; --text-dim:#7e9a86;
+    --berry:#f56b8a; --berry-deep:#c43a5c;
+    --sky:#4fc3d9; --sky-soft:#8fd0e0;
+    --plum:#5b4a8f; --plum-light:#8a6fc0; --plum-bg:#241a30; --plum-text:#c5a8f0;
+    --morning:#c45ce0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Segoe UI","Malgun Gothic",sans-serif;background:radial-gradient(circle at 20% 10%,#1a3a2a 0%,#0e221a 55%,#081a12 100%);color:var(--cream);display:flex;justify-content:center;align-items:center;min-height:100vh;padding:12px;}
+  .phone{height:min(96vh,844px);aspect-ratio:9/19.5;max-width:96vw;background:radial-gradient(circle at 50% 18%,var(--bg-mid),var(--bg-deep));border-radius:44px;position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 60px -20px rgba(0,0,0,.7),0 0 0 9px #1a1a1e,0 0 0 11px #34343a;}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:108px;height:22px;background:#000;border-radius:0 0 15px 15px;z-index:90;}
+  .statusbar{height:42px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 26px 5px;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:12px;z-index:20;}
+  .statusbar .r{font-size:11px;letter-spacing:1px;}
+  .screen{flex:1;position:relative;overflow:hidden;}
+  .view{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .3s;overflow:hidden;}
+  .view.active{opacity:1;pointer-events:auto;z-index:2;}
+  .scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+  .scroll::-webkit-scrollbar{width:0;}
+  .pad{padding:14px 16px 22px;}
+  .amb{position:absolute;pointer-events:none;opacity:.26;animation:floaty 6s ease-in-out infinite;font-size:18px;}
+  @keyframes floaty{50%{transform:translateY(-10px) rotate(6deg);}}
+  .eyebrow{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:700;font-size:12px;letter-spacing:1.5px;color:var(--sun);text-transform:uppercase;}
+  .title-lg{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:19px;color:var(--cream);}
+  .sub{font-size:11.5px;color:var(--text-soft);line-height:1.5;}
+  .card{background:linear-gradient(160deg,var(--bg-card),var(--bg-card2));border:1.5px solid var(--line2);border-radius:20px;padding:15px;}
+  .btn{position:relative;z-index:0;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:7px;width:100%;border:none;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:15px;padding:14px;border-radius:18px;color:#0c2414;background:linear-gradient(180deg,var(--sprout),#4caa32);box-shadow:0 5px 0 #2f5239;transition:.1s;}
+  .btn::before{content:'';position:absolute;z-index:-1;top:0;left:0;right:0;height:48%;background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0));pointer-events:none;}
+  .btn:active{transform:translateY(3px);box-shadow:0 2px 0 #2f5239;}
+  .btn.gold{background:linear-gradient(180deg,var(--gold),var(--sun-deep));box-shadow:0 5px 0 #b9701c;color:#5a3b10;}
+  .btn.gold:active{box-shadow:0 2px 0 #b9701c;}
+  .btn.plum{background:linear-gradient(180deg,var(--plum-light),var(--plum));box-shadow:0 5px 0 #43365a;color:#fff;}
+  .btn.plum:active{box-shadow:0 2px 0 #43365a;}
+  .btn.ghost{background:var(--panel);border:1.5px solid var(--line2);color:var(--text-soft);box-shadow:0 4px 0 #0a1c12;}
+  .pill{display:inline-flex;align-items:center;gap:5px;background:#13261a;border:1.5px solid var(--sun);border-radius:16px;padding:5px 11px;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;color:var(--gold);font-size:13px;}
+  .coin{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe39a,var(--sun));border:1.5px solid var(--sun-deep);flex:none;}
+  /* 로그인 */
+  #v-login .scroll{display:flex;}
+  #v-login .pad{display:flex;flex-direction:column;flex:1;justify-content:center;min-height:100%;}
+  .logo-orb{width:80px;height:80px;border-radius:50%;margin:0 auto;background:radial-gradient(circle at 42% 35%,#d6ffa8,var(--sprout-bright) 60%,#4f9e2e);border:3px solid #3a7a26;display:grid;place-items:center;font-size:40px;box-shadow:0 0 30px rgba(143,209,79,.4);}
+  .brand-name{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:26px;text-align:center;margin-top:13px;}
+  .brand-tag{font-size:11px;color:var(--text-soft);text-align:center;margin-top:5px;}
+  .role-q{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:13px;color:#cfe6d4;text-align:center;margin:20px 0 11px;}
+  .roles{display:flex;gap:11px;}
+  .role{flex:1;border-radius:20px;padding:15px 9px;cursor:pointer;border:2.5px solid transparent;text-align:center;transition:.15s;}
+  .role:active{transform:scale(.97);}
+  .role.child{background:linear-gradient(180deg,#1a4329,#112c1c);border-color:#3f8a52;}
+  .role.parent{background:linear-gradient(180deg,#2a2040,#1c1530);border-color:var(--plum-light);}
+  .role .rico{width:60px;height:44px;margin:0 auto;border-radius:14px;display:grid;place-items:center;font-size:28px;}
+  .role.child .rico{background:#1c4a2e;}
+  .role.parent .rico{background:#372a52;}
+  .role b{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:13.5px;display:block;margin-top:8px;}
+  .role.child b{color:#9be07a;} .role.parent b{color:var(--plum-text);}
+  .role span{font-size:9px;color:var(--text-soft);display:block;margin-top:3px;line-height:1.4;}
+  .warn-line{font-size:9px;color:var(--text-dim);text-align:center;margin-top:10px;}
+  .divider{display:flex;align-items:center;gap:10px;margin:16px 0 13px;}
+  .divider::before,.divider::after{content:"";flex:1;height:1.3px;background:var(--line);}
+  .divider span{font-size:10px;color:var(--text-dim);}
+  .social{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:none;cursor:pointer;font-size:12.5px;font-weight:700;padding:12px;border-radius:13px;margin-bottom:8px;font-family:'Gowun Dodum';}
+  .social:active{transform:scale(.98);}
+  .social.google{background:#fff;color:#1a1a1a;}
+  .social.kakao{background:#FEE500;color:#3a1d1d;}
+  .social.naver{background:#03C75A;color:#fff;}
+  .social.email{background:var(--panel);color:#cfe6d4;border:1.5px solid var(--line2);}
+  .social .nlogo{width:19px;height:17px;background:#fff;border-radius:3px;display:grid;place-items:center;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-weight:900;color:#03C75A;font-size:11px;}
+  .login-foot{font-size:10px;color:var(--text-dim);text-align:center;margin-top:5px;}
+  .login-foot b{color:var(--sprout);cursor:pointer;}
+  .login-foot.tiny{font-size:8.5px;margin-top:7px;}
+  /* appbar */
+  .appbar{flex:none;display:flex;align-items:center;gap:10px;padding:6px 16px 8px;}
+  .icon-btn{width:36px;height:36px;border-radius:11px;background:var(--panel);border:1.5px solid var(--line2);display:flex;align-items:center;justify-content:center;line-height:1;font-size:16px;cursor:pointer;color:var(--cream);padding:0;}
+  .icon-btn svg{display:block;}
+  .appbar .who small{font-size:10px;color:var(--text-soft);display:block;}
+  .appbar .who b{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:15px;}
+  .appbar .sp{flex:1;}
+  /* 홈 */
+  .level-bar{display:flex;align-items:center;gap:11px;background:var(--panel);border:1.5px solid var(--line2);border-radius:16px;padding:10px 12px;}
+  .lv-badge{position:relative;z-index:0;width:38px;height:42px;clip-path:polygon(50% 0%,100% 18%,100% 68%,50% 100%,0% 68%,0% 18%);background:linear-gradient(160deg,#2a5a38,#123320);display:grid;place-items:center;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;color:#eafbe0;font-size:14px;flex:none;filter:drop-shadow(0 0 5px rgba(127,224,90,.6));}
+  .lv-badge::after{content:'';position:absolute;z-index:-1;top:2px;left:2px;right:2px;height:42%;background:linear-gradient(180deg,rgba(255,255,255,.3),transparent);pointer-events:none;}
+  .xp-track{position:relative;height:11px;border-radius:6px;background:#0a1c12;overflow:hidden;margin-top:5px;box-shadow:inset 0 2px 3px rgba(0,0,0,.4);}
+  .xp-track::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent calc(12.5% - 1.5px),rgba(0,0,0,.35) calc(12.5% - 1.5px),rgba(0,0,0,.35) 12.5%);pointer-events:none;}
+  .xp-fill{position:relative;height:100%;border-radius:6px;background:linear-gradient(180deg,#c8f26a,var(--sprout) 55%,#4caa32);transition:width .5s;box-shadow:0 0 6px rgba(127,224,90,.6);}
+  .wallet{display:flex;align-items:center;gap:12px;background:linear-gradient(160deg,#26200e,#1a1608);border:2px solid var(--gold);border-radius:18px;padding:13px;box-shadow:0 0 18px rgba(244,185,66,.15);}
+  .wallet .big-coin{width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff5d6,var(--sun));border:3px solid var(--sun-deep);display:grid;place-items:center;font-size:23px;flex:none;box-shadow:0 0 16px rgba(244,185,66,.4);}
+  .sec-title{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:14px;color:var(--cream);display:flex;align-items:center;gap:6px;}
+  .mission{position:relative;display:flex;align-items:center;gap:11px;background:linear-gradient(160deg,var(--bg-card),var(--bg-card2));border:1.5px solid var(--line2);border-radius:16px;padding:11px 11px 11px 15px;cursor:pointer;transition:.15s;overflow:hidden;}
+  .mission::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--sprout);}
+  .mission.m-eco::before{background:var(--sky);}
+  .mission.m-good::before{background:var(--berry);}
+  .mission.done::before{background:#4caa32;opacity:.6;}
+  .mission:active{transform:scale(.98);}
+  .mission.done{opacity:.55;}
+  .mission .mico{width:36px;height:36px;border-radius:11px;background:#1c3a26;display:grid;place-items:center;font-size:17px;flex:none;position:relative;}
+  .mtag{position:absolute;top:-7px;left:-5px;font-size:8px;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;padding:1px 5px;border-radius:6px;white-space:nowrap;}
+  .mtag.eco{background:#3a6e2a;color:#d6ffa8;} .mtag.good{background:#2a5570;color:#bfe6ff;}
+  .mission .mbody{flex:1;min-width:0;}
+  .mission .mbody b{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:12.5px;}
+  .mission .mbody span{display:block;font-size:10px;color:var(--text-soft);margin-top:1px;}
+  .reward-chip{position:relative;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:12px;color:#3a2405;background:linear-gradient(180deg,#ffe39a,var(--sun) 60%,var(--sun-deep));border:1.5px solid #b9701c;border-radius:13px;padding:4px 10px;flex:none;box-shadow:0 2px 0 #8a5414;}
+  .mission.done .reward-chip{background:linear-gradient(180deg,#9ee87a,#4caa32);border-color:#2f5239;color:#0c2414;box-shadow:0 2px 0 #234a1e;}
+  .goal-strip{position:relative;display:flex;align-items:center;gap:11px;background:#142e3a;border:1.5px solid #2a6478;border-radius:16px;padding:11px 11px 11px 15px;overflow:hidden;}
+  .goal-strip::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--sky);}
+  .ring{width:46px;height:46px;flex:none;border-radius:50%;display:grid;place-items:center;}
+  /* nav */
+  .nav{flex:none;display:flex;background:#0a1810;border-top:1.5px solid var(--line);padding:7px 4px 11px;z-index:20;}
+  .nav button{flex:1;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:10px;color:var(--text-dim);padding:6px 0;margin:0 3px;border-radius:14px;transition:.2s;}
+  .nav button .ni{font-size:20px;opacity:.55;transition:.2s;}
+  .nav button.active{color:var(--sprout);background:rgba(127,224,90,.14);}
+  .nav button.active .ni{opacity:1;transform:translateY(-2px) scale(1.12);}
+  /* AR */
+  .ar-stage{position:relative;flex:1;overflow:hidden;background:linear-gradient(180deg,#a9c7d6 0%,#cdd9c4 42%,#b6c79e 62%,#8fa876 100%);}
+  .ar-floor{position:absolute;left:0;right:0;bottom:0;height:36%;background:linear-gradient(180deg,#9fb085,#7d9162);}
+  .ar-obj{position:absolute;opacity:.45;}
+  .ar-token{position:absolute;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;animation:bob 2.4s ease-in-out infinite;z-index:5;}
+  @keyframes bob{50%{transform:translateY(-8px);}}
+  .ar-token .tk{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-size:23px;border:3px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.3);}
+  .ar-token .tlab{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:700;font-size:10px;background:#fff;padding:1px 7px;border-radius:9px;color:#333;}
+  .ar-token.tapped{animation:pop .5s forwards;}
+  @keyframes pop{40%{transform:scale(1.3);}100%{transform:scale(0);opacity:0;}}
+  .ar-top{position:absolute;top:12px;left:12px;right:12px;display:flex;align-items:center;justify-content:space-between;z-index:10;}
+  .ar-chip{background:rgba(0,0,0,.45);border-radius:16px;padding:6px 11px;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:13px;color:var(--gold);display:flex;align-items:center;gap:5px;}
+  .ar-close{width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.45);display:grid;place-items:center;color:#fff;font-size:17px;cursor:pointer;border:none;}
+  .battle{position:absolute;top:56px;left:12px;right:12px;background:rgba(13,31,42,.92);border:1.5px solid #3a7fa0;border-radius:16px;padding:9px 12px;z-index:10;}
+  .float-coin{position:absolute;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;color:var(--sun-deep);font-size:19px;pointer-events:none;animation:rise 1s ease-out forwards;z-index:30;}
+  @keyframes rise{to{opacity:0;transform:translateY(-44px);}}
+  .ar-feedback{position:absolute;left:14px;right:14px;bottom:14px;background:rgba(13,36,24,.96);border:2px solid var(--sprout);border-radius:20px;padding:14px;z-index:15;transform:translateY(160%);transition:.4s cubic-bezier(.34,1.4,.5,1);}
+  .ar-feedback.show{transform:none;}
+  /* AR 타이밍 UI */
+  .ar-hint{position:absolute;top:60px;left:50%;transform:translateX(-50%) translateY(-12px);background:rgba(0,0,0,.55);color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:13px;padding:9px 18px;border-radius:20px;z-index:11;display:flex;align-items:center;gap:6px;opacity:0;transition:.4s;white-space:nowrap;}
+  .ar-hint.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .ar-balance{position:absolute;top:104px;right:14px;background:rgba(0,0,0,.5);border:1.5px solid var(--sun);border-radius:16px;padding:6px 12px;z-index:11;display:flex;align-items:center;gap:5px;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;color:var(--gold);font-size:14px;opacity:0;transform:translateX(20px);transition:.4s;}
+  .ar-balance.show{opacity:1;transform:none;}
+  .ar-center-token{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%) scale(.4);z-index:10;cursor:pointer;display:flex;flex-direction:column;align-items:center;opacity:0;transition:.5s cubic-bezier(.34,1.6,.5,1);}
+  .ar-center-token.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
+  .ar-center-token.collected{pointer-events:none;}
+  .ar-center-token .ct-glow{position:absolute;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(143,209,79,.5),transparent 65%);animation:ctpulse 1.6s ease-in-out infinite;}
+  @keyframes ctpulse{50%{transform:scale(1.25);opacity:.6;}}
+  .ar-center-token .ct-ring{position:absolute;width:84px;height:84px;border-radius:50%;border:3px dashed rgba(255,255,255,.85);animation:ctspin 6s linear infinite;}
+  @keyframes ctspin{to{transform:rotate(360deg);}}
+  .ar-center-token .ct-core{width:66px;height:66px;border-radius:50%;background:radial-gradient(circle at 38% 30%,#fff5d6,#b88a4f 70%,#5a3c1c);border:3px solid #5a3c1c;display:grid;place-items:center;font-size:32px;box-shadow:0 6px 20px rgba(0,0,0,.4);animation:ctbob 2.2s ease-in-out infinite;}
+  @keyframes ctbob{50%{transform:translateY(-8px);}}
+  .ar-center-token .ct-label{margin-top:14px;background:#fff;color:#5a3c1c;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:700;font-size:12px;padding:3px 12px;border-radius:12px;box-shadow:0 3px 8px rgba(0,0,0,.3);white-space:nowrap;}
+  .ar-arrow{position:absolute;bottom:150px;left:50%;transform:translateX(-50%);z-index:10;text-align:center;opacity:0;transition:.4s;}
+  .ar-arrow.show{opacity:1;}
+  .ar-arrow .arrow-ico{font-size:44px;line-height:.5;color:var(--gold);font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;animation:arrowbounce 1s ease-in-out infinite;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));}
+  @keyframes arrowbounce{50%{transform:translateY(8px);}}
+  .ar-arrow .arrow-txt{background:rgba(0,0,0,.55);color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:700;font-size:11px;padding:3px 11px;border-radius:11px;margin-top:2px;display:inline-block;}
+  .ar-flash{position:absolute;inset:0;z-index:14;pointer-events:none;background:radial-gradient(circle at 50% 46%,rgba(255,255,255,.9),rgba(143,209,79,.3) 40%,transparent 70%);opacity:0;}
+  .ar-flash.burst{animation:flashburst .7s ease-out;}
+  @keyframes flashburst{0%{opacity:0;transform:scale(.3);}25%{opacity:1;}100%{opacity:0;transform:scale(1.6);}}
+  .reward-particle{position:absolute;font-size:20px;z-index:14;pointer-events:none;animation:particlefly .9s ease-out forwards;}
+  @keyframes particlefly{to{transform:translate(var(--dx),var(--dy)) scale(.3) rotate(180deg);opacity:0;}}
+  /* 정원 */
+  .pot-bed{display:flex;gap:8px;background:linear-gradient(180deg,#14342a,#0e2620);border:1.5px solid #1f5040;border-radius:20px;padding:14px 6px 10px;}
+  .planter{flex:1;text-align:center;cursor:pointer;border-radius:14px;padding:4px 2px;transition:.15s;border:2px solid transparent;}
+  .planter.sel{border-color:var(--sprout);background:rgba(127,224,90,.08);}
+  .pot-stage{height:84px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;position:relative;}
+  .stars{font-size:9px;letter-spacing:-1px;margin-bottom:3px;}
+  .pot{width:44px;height:28px;border-radius:5px 5px 11px 11px;background:linear-gradient(180deg,#9a6b42,#6e4a2c);display:grid;place-items:center;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:9px;margin-top:2px;}
+  .planter .pname{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:11px;margin-top:5px;}
+  .planter .pmeta{font-size:9px;color:var(--text-soft);margin-top:1px;}
+  .seed-row{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
+  .seed-row .snm{width:42px;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:11px;}
+  .seed-row input[type=range]{flex:1;accent-color:var(--moss);height:5px;}
+  .seed-row .sv{width:34px;text-align:right;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:12px;color:var(--gold);}
+  .risk-meter{height:8px;border-radius:5px;background:linear-gradient(90deg,var(--sprout),var(--sun),var(--berry));margin-top:4px;position:relative;}
+  .risk-meter .pin{position:absolute;top:-4px;width:4px;height:16px;background:#fff;border-radius:2px;transition:left .25s;box-shadow:0 0 4px rgba(0,0,0,.4);}
+  .warnbox{background:#13301f;border:1.5px solid #3a6e2a;border-radius:13px;padding:10px 12px;font-size:11px;color:#cfe6d4;line-height:1.5;}
+  .warnbox.alert{background:#3a1c1c;border-color:var(--berry-deep);color:#f7c2cc;}
+  .modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:100;}
+  .modal-bg.show{display:flex;}
+  .modal{width:100%;background:linear-gradient(180deg,#0d2418,#0a1c12);border:2.5px solid var(--sun);border-radius:24px;padding:20px;animation:popin .3s cubic-bezier(.34,1.5,.5,1);}
+  @keyframes popin{from{transform:scale(.85);opacity:0;}}
+  .check-row{display:flex;align-items:center;gap:9px;background:#13261a;border-radius:10px;padding:9px;cursor:pointer;margin:12px 0;}
+  .check-box{width:20px;height:20px;border-radius:6px;border:2px solid var(--line2);flex:none;display:grid;place-items:center;font-size:13px;color:transparent;}
+  .check-row.on .check-box{background:#4caa32;border-color:#4caa32;color:#fff;}
+  /* 상점 */
+  .tabs{display:flex;background:var(--panel);border:1.5px solid var(--line2);border-radius:14px;padding:4px;gap:4px;}
+  .tab{flex:1;text-align:center;padding:9px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:12.5px;color:var(--text-soft);cursor:pointer;transition:.15s;}
+  .tab.active{background:var(--sprout);color:#0c2414;box-shadow:0 0 12px rgba(127,224,90,.25);}
+  .shop-opt{flex:1;border-radius:16px;padding:13px 10px;text-align:center;cursor:pointer;border:2.5px solid transparent;background:var(--bg-card);transition:.15s;position:relative;}
+  .shop-opt.sel{border-color:var(--sprout);background:var(--bg-card2);}
+  .shop-opt .se{font-size:28px;}
+  .shop-opt .snm2{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:13px;margin-top:3px;}
+  .shop-opt .sprice{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:19px;margin-top:2px;}
+  .shop-opt .smeta{font-size:9.5px;color:var(--text-soft);margin-top:3px;line-height:1.4;}
+  .exch-item{display:flex;align-items:center;gap:12px;background:linear-gradient(160deg,var(--bg-card),var(--bg-card2));border:1.5px solid var(--line2);border-radius:16px;padding:12px;}
+  .exch-item .ei{width:48px;height:48px;border-radius:12px;background:#1c3a26;display:grid;place-items:center;font-size:23px;flex:none;}
+  /* 마이페이지 */
+  .stat-mini{background:linear-gradient(160deg,var(--bg-card),var(--bg-card2));border:1.5px solid var(--line2);border-radius:16px;padding:11px;text-align:center;}
+  .stat-mini .num{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:20px;}
+  .badge-c{position:relative;z-index:0;width:48px;height:52px;clip-path:polygon(50% 0%,100% 18%,100% 68%,50% 100%,0% 68%,0% 18%);background:linear-gradient(160deg,#1c3a26,#0d2418);display:grid;place-items:center;font-size:20px;}
+  .badge-c::before{content:'';position:absolute;z-index:-2;inset:-2px;clip-path:polygon(50% 0%,100% 18%,100% 68%,50% 100%,0% 68%,0% 18%);background:var(--bc,var(--sprout));}
+  .badge-c::after{content:'';position:absolute;z-index:-1;top:2px;left:2px;right:2px;height:38%;background:linear-gradient(180deg,rgba(255,255,255,.22),transparent);pointer-events:none;}
+  .badge-wrap{text-align:center;}
+  .badge-wrap span{font-size:8px;color:var(--text-soft);display:block;margin-top:4px;}
+  /* 부모 */
+  .parent-bg{background:radial-gradient(circle at 50% 10%,#252038,#120e24)!important;}
+  .pcard{background:linear-gradient(160deg,#2a2342,#1e1838);border:1.5px solid #2e2748;border-radius:18px;padding:14px;}
+  .pstat{background:linear-gradient(160deg,#2a2342,#1e1838);border-radius:14px;padding:11px;}
+  .switch{width:42px;height:24px;border-radius:12px;background:#3a2f52;position:relative;cursor:pointer;transition:.2s;flex:none;}
+  .switch.on{background:#4caa32;}
+  .switch .knob{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s;}
+  .switch.on .knob{left:21px;}
+  /* 드로어 */
+  .drawer-bg{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:.3s;z-index:80;}
+  .drawer-bg.show{opacity:1;pointer-events:auto;}
+  .drawer{position:absolute;top:0;left:0;bottom:0;width:80%;max-width:290px;background:radial-gradient(circle at 20% 15%,#1f4530,#0a1c14);border-right:3px solid rgba(127,224,90,.3);transform:translateX(-105%);transition:.3s cubic-bezier(.4,1,.5,1);z-index:81;display:flex;flex-direction:column;padding:40px 16px 16px;overflow-y:auto;}
+  .drawer.show{transform:none;}
+  .drawer::-webkit-scrollbar{width:0;}
+  .dmenu{display:flex;align-items:center;gap:13px;padding:11px 10px;border-radius:13px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:13.5px;color:#cfe6d4;}
+  .dmenu.active{background:#16331f;color:var(--cream);}
+  .dmenu .di{font-size:18px;width:24px;text-align:center;}
+  .dmenu:active{background:#1c3a26;}
+  .dsep{height:1.3px;background:var(--line);margin:9px 4px;}
+  .toast{position:absolute;left:50%;bottom:88px;transform:translateX(-50%) translateY(20px);background:#000;border:1.5px solid var(--line2);color:#fff;font-weight:600;font-size:13px;padding:10px 18px;border-radius:16px;opacity:0;pointer-events:none;transition:.3s;z-index:95;max-width:92%;white-space:nowrap;text-align:center;line-height:1.4;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .up{color:var(--sprout);} .down{color:var(--berry);}
+  .stars-lbl{color:var(--gold);}
+  /* 컨페티 축하 연출 */
+  #confettiLayer{position:absolute;inset:0;pointer-events:none;z-index:120;overflow:hidden;}
+  .confetti{position:absolute;top:-16px;width:10px;height:14px;border-radius:2px;opacity:.95;will-change:transform;animation:conffall linear forwards;}
+  @keyframes conffall{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(115%) rotate(720deg);opacity:.9;}}
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+  <div class="notch"></div>
+  <div class="statusbar"><span>9:41</span><span class="r">📶 🔋</span></div>
+  <div class="screen" id="screen"></div>
+  <div class="drawer-bg" id="drawerBg" onclick="closeDrawer()"></div>
+  <div class="drawer" id="drawer"></div>
+  <div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()"><div class="modal" id="modalBox"></div></div>
+  <div class="toast" id="toast"></div>
+</div>
+<script>
+/* ============ 상태 ============ */
+const S = {
+  name: '호영', avatar: '🧒',
+  seeds: 335, saved: 210, xp: 660, xpMax: 1000, level: 4,
+  goalCur: 620, goalMax: 1000,
+  shopTab: 'practice',
+  garden: { cactus:40, tulip:40, morning:20 },
+  pendingPot: null,
+};
+const $ = id => document.getElementById(id);
+const screen = $('screen');
+
+/* ============ 토스트 ============ */
+let toastTimer;
+function toast(msg){
+  const t=$('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+}
+/* ============ 모달 ============ */
+function openModal(html){ $('modalBox').innerHTML=html; $('modalBg').classList.add('show'); }
+function closeModal(){ $('modalBg').classList.remove('show'); }
+/* ============ 드로어 ============ */
+function openDrawer(){ renderDrawer(); $('drawer').classList.add('show'); $('drawerBg').classList.add('show'); }
+function closeDrawer(){ $('drawer').classList.remove('show'); $('drawerBg').classList.remove('show'); }
+
+/* ============ 씨앗 갱신 ============ */
+function addSeeds(n){ S.seeds=Math.max(0,S.seeds+n); refreshWallets(); }
+function refreshWallets(){ document.querySelectorAll('[data-seeds]').forEach(e=>e.textContent=S.seeds); }
+function addXp(n){ S.xp+=n; if(S.xp>=S.xpMax){S.xp-=S.xpMax;S.level++;toast('🎉 레벨 업! Lv.'+S.level);celebrate('big');} document.querySelectorAll('[data-xp]').forEach(e=>e.style.width=(S.xp/S.xpMax*100)+'%'); }
+
+/* ============ 컨페티 축하 연출 ============ */
+function celebrate(size){
+  const phone=$('phone');
+  let layer=$('confettiLayer');
+  if(!layer){ layer=document.createElement('div'); layer.id='confettiLayer'; phone.appendChild(layer); }
+  const colors=['#7fe05a','#f4b942','#4fc3d9','#f56b8a','#c45ce0','#ffd96b','#8fd14f'];
+  const count = size==='big' ? 60 : 34;
+  for(let i=0;i<count;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'%';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    const dur=1.1+Math.random()*1.1;
+    c.style.animationDuration=dur+'s';
+    c.style.animationDelay=(Math.random()*0.25)+'s';
+    // 좌우로 살짝 퍼지게 + 크기 랜덤
+    const w=6+Math.random()*7;
+    c.style.width=w+'px'; c.style.height=(w*1.4)+'px';
+    if(Math.random()<0.4) c.style.borderRadius='50%';
+    layer.appendChild(c);
+    setTimeout(()=>c.remove(),(dur+0.4)*1000);
+  }
+}
+
+/* 화면 라우팅은 app2 스크립트에서 정의 */
+</script>
+<script id="app2">
+/* ============ 화면 렌더링 ============ */
+const views = {};
+let currentView = 'login';
+function go(name){
+  currentView = name;
+  screen.innerHTML = views[name] ? views[name]() : '<div class="pad">준비 중</div>';
+  if(afterRender[name]) afterRender[name]();
+  closeDrawer();
+}
+const afterRender = {};
+
+/* ---------- 하단 네비 공통 ---------- */
+function navBar(active){
+  const items=[['home','🏠','홈'],['ar','🔭','탐험'],['garden','🪴','정원'],['shop','🏪','상점'],['my','👤','마이']];
+  return '<div class="nav">'+items.map(([k,i,l])=>
+    `<button class="${active===k?'active':''}" onclick="go('${k}')"><span class="ni">${i}</span>${l}</button>`).join('')+'</div>';
+}
+/* ---------- 앱바 공통 ---------- */
+function appBar(titleSmall,titleBig){
+  return `<div class="appbar">
+    <div class="icon-btn" onclick="openDrawer()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line></svg></div>
+    <div class="who"><small>${titleSmall}</small><b>${titleBig}</b></div>
+    <div class="sp"></div>
+    <div class="pill"><span class="coin"></span><span data-seeds>${S.seeds}</span></div>
+  </div>`;
+}
+
+/* ============ 로그인 ============ */
+views.login = () => `
+<div class="view active" id="v-login">
+  <div class="scroll"><div class="pad">
+    <div class="logo-orb">🌱</div>
+    <div class="brand-name">새싹테라스</div>
+    <div class="brand-tag">씨앗을 모아 키우는 우리 집 경제 정원</div>
+    <div class="role-q">누구로 로그인할까요?</div>
+    <div class="roles">
+      <div class="role child" onclick="pickRole('child',this)">
+        <div class="rico">🧒</div><b>아이로 시작</b><span>탐험하고 씨앗을 키워요</span>
+      </div>
+      <div class="role parent" onclick="pickRole('parent',this)">
+        <div class="rico">👨‍👩‍👧</div><b>보호자로 시작</b><span>규칙을 만들고 바꿔줘요</span>
+      </div>
+    </div>
+    <div class="warn-line">⚠️ 보호자 화면은 아이 기기에서 열 수 없어요</div>
+    <div class="divider"><span>또는</span></div>
+    <button class="social google" onclick="socialLogin('구글')"><b style="color:#4285F4;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800">G</b> Google로 계속하기</button>
+    <button class="social kakao" onclick="socialLogin('카카오')">💬 카카오로 계속하기</button>
+    <button class="social naver" onclick="socialLogin('네이버')"><span class="nlogo">N</span> 네이버로 계속하기</button>
+    <button class="social email" onclick="socialLogin('이메일')">✉️ 이메일로 가입 / 로그인</button>
+    <div class="login-foot">이미 가족이 쓰고 있나요? <b onclick="go('familycode')">가족 코드 입력</b></div>
+    <div class="login-foot tiny">가입하면 이용약관과 개인정보처리방침에 동의하게 돼요</div>
+  </div></div>
+</div>`;
+let chosenRole='child';
+function pickRole(r,el){
+  chosenRole=r;
+  document.querySelectorAll('.role').forEach(x=>x.style.boxShadow='');
+  el.style.boxShadow='0 0 0 3px rgba(127,224,90,.4)';
+  toast((r==='child'?'아이':'보호자')+' 모드를 선택했어요');
+}
+function socialLogin(name){
+  if(chosenRole==='parent'){ toast(name+' 계정으로 보호자 로그인'); setTimeout(()=>go('parent'),700); }
+  else { toast(name+' 계정으로 아이 로그인'); setTimeout(()=>go('home'),700); }
+}
+
+/* ============ 가족 코드 ============ */
+views.familycode = () => `
+<div class="view active">
+  <div class="appbar"><div class="icon-btn" onclick="go('login')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div class="who"><b>가족 연결</b></div></div>
+  <div class="scroll"><div class="pad" style="text-align:center">
+    <div style="width:78px;height:78px;border-radius:50%;margin:8px auto;background:#13261a;border:2.5px solid var(--sprout);display:grid;place-items:center;font-size:38px">🔗</div>
+    <div class="title-lg" style="margin-top:6px">아이와 보호자를 연결해요</div>
+    <p class="sub" style="margin-top:6px">보호자가 만든 가족 코드를 아이가 입력하면<br>같은 정원을 함께 쓰게 돼요</p>
+    <div class="card" style="margin-top:18px;border-color:var(--plum-light);background:linear-gradient(160deg,#241a30,#1a1428);text-align:left">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="background:#3a2e5a;color:var(--plum-text);font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:9px;padding:3px 9px;border-radius:10px">보호자</span><span class="sub">내 가족 코드 (아이에게 알려주기)</span></div>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1;background:#0f0a1a;border-radius:12px;padding:12px;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:25px;letter-spacing:6px;color:#e0d6f0">7K2P9</div>
+        <div onclick="toast('코드를 복사했어요')" style="width:46px;background:#3a2e5a;border-radius:12px;display:grid;place-items:center;font-size:18px;cursor:pointer">📋</div>
+      </div>
+    </div>
+    <div class="divider"><span>아이라면</span></div>
+    <div class="card" style="text-align:left">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span style="background:#1c4a2e;color:#9be07a;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:9px;padding:3px 9px;border-radius:10px">아이</span><span class="sub">보호자에게 받은 코드 입력</span></div>
+      <input id="famInput" maxlength="5" placeholder="• • • • •" oninput="this.value=this.value.toUpperCase()" style="width:100%;background:#0d2418;border:2px solid var(--line2);border-radius:12px;padding:14px;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:24px;letter-spacing:8px;color:var(--cream)">
+    </div>
+    <button class="btn" style="margin-top:14px" onclick="connectFamily()">🌱 가족 정원 연결하기</button>
+    <p class="sub" style="margin-top:10px;font-size:9.5px">연결하면 보호자가 내 활동을 확인할 수 있어요</p>
+  </div></div>
+</div>`;
+function connectFamily(){
+  const v=$('famInput').value.trim();
+  if(v.length<5){ toast('5자리 코드를 입력해 주세요'); return; }
+  toast('가족 정원에 연결됐어요! 🌱'); setTimeout(()=>go('home'),800);
+}
+
+/* ============ 아이 홈 ============ */
+const missions = [
+  {id:0,tag:'eco',ico:'🔍',name:'더 싼 가게 찾기',desc:'두 가게 가격 비교하고 싼 곳에서 사기',rew:20,done:false},
+  {id:1,tag:'eco',ico:'🐷',name:'번 씨앗의 절반 저금',desc:'미래의 나를 위해 참고 모으기',rew:25,done:false},
+  {id:2,tag:'eco',ico:'🪴',name:'화분에 나눠 심기',desc:'한 곳에 몰지 말고 분산하기',rew:15,done:false},
+  {id:3,tag:'good',ico:'💧',name:'물 절약 미션',desc:'양치할 때 물 잠그기',rew:15,done:true},
+];
+views.home = () => {
+  const goalPct = Math.round(S.goalCur/S.goalMax*100);
+  return `<div class="view active parent-reset">
+  ${appBar('안녕, '+S.name+' 모험가!','오늘의 경제 미션이 왔어')}
+  <div class="scroll"><div class="pad">
+    <span class="amb" style="top:90px;left:20px">🌿</span>
+    <div class="level-bar">
+      <div class="lv-badge">${S.level}</div>
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;font-size:11px"><b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;color:var(--cream)">레벨 ${S.level} · 알뜰 탐험가</b><span class="sub">${S.xp}/${S.xpMax} XP</span></div>
+        <div class="xp-track"><div class="xp-fill" data-xp style="width:${S.xp/S.xpMax*100}%"></div></div>
+      </div>
+    </div>
+    <div class="wallet" style="margin-top:12px">
+      <div class="big-coin">🪙</div>
+      <div style="flex:1"><div style="font-size:11.5px;color:#c9b583">내 지갑</div><div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:25px;color:var(--gold)"><span data-seeds>${S.seeds}</span> <span style="font-size:13px;color:#c9b583">씨앗</span></div></div>
+      <div style="text-align:right"><div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:12px;color:var(--sprout)">저금 ${S.saved}</div><div class="sub" style="font-size:10px">저축률 66%</div></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 2px 9px">
+      <div class="sec-title">🎯 오늘의 미션</div>
+      <span class="sub" id="missionCount">${missions.filter(m=>m.done).length} / ${missions.length} 완료</span>
+    </div>
+    <div id="missionList" style="display:flex;flex-direction:column;gap:9px">${renderMissions()}</div>
+    <button class="btn gold" style="margin-top:14px" onclick="go('ar')">🔭 AR 탐험 떠나기</button>
+    <div class="goal-strip" style="margin-top:12px" onclick="go('goal')">
+      <div class="ring" style="background:conic-gradient(var(--sky) ${goalPct}%, #0d2430 0)"><div style="width:34px;height:34px;border-radius:50%;background:#142e3a;display:grid;place-items:center;font-size:18px">🚲</div></div>
+      <div style="flex:1"><b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:12px">자전거 목표</b><div class="sub" style="font-size:10px">${S.goalCur} / ${S.goalMax} 씨앗 · 예상 9일 남음</div></div>
+      <div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;color:var(--sky)">${goalPct}%</div>
+    </div>
+  </div></div>
+  ${navBar('home')}
+</div>`;
+};
+function renderMissions(){
+  return missions.map(m=>`
+    <div class="mission m-${m.tag==='eco'?'eco':'good'} ${m.done?'done':''}" onclick="doMission(${m.id})">
+      <div class="mico" style="background:${m.tag==='eco'?'#0d2c33':'#331520'}">${m.ico}<span class="mtag ${m.tag}">${m.tag==='eco'?'경제':'착한행동'}</span></div>
+      <div class="mbody"><b>${m.name}</b><span>${m.done?'완료했어요!':m.desc}</span></div>
+      <div class="reward-chip">${m.done?'✓':'+'+m.rew}</div>
+    </div>`).join('');
+}
+function doMission(id){
+  const m=missions.find(x=>x.id===id);
+  if(m.done){ toast('이미 완료한 미션이에요'); return; }
+  if(id===0){ go('shop'); return; }
+  if(id===2){ go('garden'); return; }
+  m.done=true; addSeeds(m.rew); addXp(30);
+  $('missionList').innerHTML=renderMissions();
+  $('missionCount').textContent=missions.filter(x=>x.done).length+' / '+missions.length+' 완료';
+  toast(m.name+' 완료! +'+m.rew+'씨앗 · +30 XP'); celebrate();
+}
+
+/* ============ AR 탐험 (영상 기반) ============ */
+let myBattle=85, friendBattle=62;
+let arTimers=[];
+views.ar = () => `
+<div class="view active">
+  <div class="ar-stage" id="arStage" style="background:#000">
+    <video id="arVideo" playsinline muted autoplay
+      style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0"
+      src="terrace-ar.mp4"></video>
+    <div id="arVideoFallback" style="position:absolute;inset:0;z-index:0;display:none;background:linear-gradient(180deg,#a9c7d6,#8fa876);align-items:center;justify-content:center;flex-direction:column;color:#2a3a2e;text-align:center;padding:24px">
+      <div style="font-size:40px">🎥</div>
+      <p style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:13px;margin-top:8px">AR 영상을 불러올 수 없어요</p>
+      <p style="font-size:10px;margin-top:4px;opacity:.7">terrace-ar.mp4 파일을 이 HTML과<br>같은 폴더에 두면 재생돼요</p>
+    </div>
+
+    <!-- 상단 닫기 + AR 토글 (항상) -->
+    <div class="ar-top" style="z-index:12">
+      <button class="ar-close" onclick="exitAR()">✕</button>
+      <div style="flex:1"></div>
+      <div class="ar-chip" style="color:var(--sprout)" onclick="openArMap()">AR</div>
+    </div>
+
+    <!-- 상단 안내: 주변을 둘러보세요 (1~4초) -->
+    <div id="arHint" class="ar-hint">
+      <span style="font-size:15px">🔍</span> 주변을 둘러보세요
+    </div>
+
+    <!-- 우측 씨앗 잔액 (1~10초) -->
+    <div id="arBalance" class="ar-balance">
+      <span class="coin" style="width:14px;height:14px"></span>
+      <span data-seeds>${S.seeds}</span>
+      <span style="font-size:9px;opacity:.8">씨앗</span>
+    </div>
+
+    <!-- 중앙 씨앗 토큰 (5~10초, 터치→보상) -->
+    <div id="arCenterToken" class="ar-center-token" onclick="collectCenter()">
+      <div class="ct-glow"></div>
+      <div class="ct-ring"></div>
+      <div class="ct-core">🌰</div>
+      <div class="ct-label">정리 씨앗 · 톡 터치!</div>
+    </div>
+
+    <!-- 바닥 화살표 (7~9초) -->
+    <div id="arArrow" class="ar-arrow">
+      <div class="arrow-ico">⌄</div>
+      <div class="arrow-txt">여기를 청소해 볼까?</div>
+    </div>
+
+    <!-- 대결 점수 (하단, 항상) -->
+    <div class="battle" id="arBattle" style="top:auto;bottom:14px;z-index:11">
+      <div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:10px;color:var(--gold);margin-bottom:6px">⚔️ 오늘의 씨앗 대결 · 남은 시간 02:14</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="text-align:center"><div style="font-size:15px">🧒</div><div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:11px;color:var(--sprout)">나 <span id="myB">${myBattle}</span></div></div>
+        <div style="flex:1;height:11px;border-radius:6px;background:#2a1a1a;overflow:hidden;display:flex">
+          <div id="myBar" style="height:100%;background:var(--sprout);width:${myBattle/(myBattle+friendBattle)*100}%"></div>
+          <div style="height:100%;background:var(--berry);flex:1"></div>
+        </div>
+        <div style="text-align:center"><div style="font-size:15px">🧑</div><div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:11px;color:var(--berry)">민준 ${friendBattle}</div></div>
+      </div>
+    </div>
+
+    <!-- 빛번짐 플래시 (보상 연출) -->
+    <div id="arFlash" class="ar-flash"></div>
+    <!-- 보상 카드 -->
+    <div class="ar-feedback" id="arFb"></div>
+  </div>
+  ${navBar('ar')}
+</div>`;
+
+afterRender.ar = () => {
+  const v = $('arVideo');
+  if(v){
+    try { const p = v.play(); if(p && p.catch) p.catch(()=>{}); } catch(e){}
+    v.onerror = () => { const fb=$('arVideoFallback'); if(fb) fb.style.display='flex'; };
+  }
+  runArSequence();
+};
+function clearArTimers(){ arTimers.forEach(t=>clearTimeout(t)); arTimers=[]; }
+function runArSequence(){
+  clearArTimers();
+  const hint=$('arHint'), bal=$('arBalance'), center=$('arCenterToken'), arrow=$('arArrow');
+  // 초기 상태
+  [hint,center,arrow].forEach(e=>e&&e.classList.remove('show'));
+  if(bal) bal.classList.remove('show');
+  // 우측 잔액: 1~10초
+  arTimers.push(setTimeout(()=>bal&&bal.classList.add('show'),1000));
+  arTimers.push(setTimeout(()=>bal&&bal.classList.remove('show'),10000));
+  // 상단 안내: 1~4초
+  arTimers.push(setTimeout(()=>hint&&hint.classList.add('show'),1000));
+  arTimers.push(setTimeout(()=>hint&&hint.classList.remove('show'),4000));
+  // 중앙 씨앗: 5~10초
+  arTimers.push(setTimeout(()=>center&&center.classList.add('show'),5000));
+  arTimers.push(setTimeout(()=>{ if(center&&!center.classList.contains('collected')) center.classList.remove('show'); },10000));
+  // 바닥 화살표: 7~9초
+  arTimers.push(setTimeout(()=>arrow&&arrow.classList.add('show'),7000));
+  arTimers.push(setTimeout(()=>arrow&&arrow.classList.remove('show'),9000));
+}
+function exitAR(){ clearArTimers(); const v=$('arVideo'); if(v){v.pause();} go('home'); }
+function collectCenter(){
+  const center=$('arCenterToken');
+  if(!center||center.classList.contains('collected'))return;
+  center.classList.add('collected');
+  // 진동
+  if(navigator.vibrate) navigator.vibrate([40,60,120]);
+  // 빛번짐 플래시
+  const flash=$('arFlash');
+  flash.classList.add('burst');
+  setTimeout(()=>flash.classList.remove('burst'),700);
+  // 씨앗 튀는 파티클
+  const stage=$('arStage');
+  for(let k=0;k<8;k++){
+    const p=document.createElement('div'); p.className='reward-particle'; p.textContent='🌱';
+    const ang=(k/8)*Math.PI*2, dist=60+Math.random()*30;
+    p.style.left='50%'; p.style.top='46%';
+    p.style.setProperty('--dx',(Math.cos(ang)*dist)+'px');
+    p.style.setProperty('--dy',(Math.sin(ang)*dist)+'px');
+    stage.appendChild(p); setTimeout(()=>p.remove(),900);
+  }
+  // 보상 지급
+  const rew=10;
+  addSeeds(rew); addXp(20);
+  myBattle+=rew; $('myB').textContent=myBattle;
+  $('myBar').style.width=(myBattle/(myBattle+friendBattle)*100)+'%';
+  // 토큰 사라짐
+  setTimeout(()=>center.classList.remove('show'),400);
+  // 뿌듯한 보상 카드
+  const fb=$('arFb');
+  fb.innerHTML=`<div style="display:flex;align-items:center;gap:12px">
+    <div style="width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:24px;background:radial-gradient(circle at 38% 30%,#fff,#8fd14f);border:2px solid #3a7a26">🌱</div>
+    <div style="flex:1"><div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:13px;color:var(--sprout)">정리 완료! 잘했어요 ✨</div>
+    <div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:17px;color:var(--gold)">+${rew} 씨앗 <span style="font-size:11px;color:var(--sky-soft)">· +20 XP</span></div></div></div>
+    <div style="background:#13301f;border-radius:11px;padding:9px;margin-top:9px"><div style="font-size:10px;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;color:#8fe0a0">💡 오늘의 경제 한 조각</div><div style="font-size:11px;color:#cfe6d4;margin-top:2px">길에서 쓰레기를 주우면 씨앗을 벌 수 있어요. 좋은 행동이 곧 나의 자산이 돼요!</div></div>`;
+  fb.classList.add('show'); celebrate();
+  setTimeout(()=>fb.classList.remove('show'),4000);
+}
+
+
+/* ============ 정원 ============ */
+const pots = {
+  cactus:{name:'든든 선인장',emoji:'🌵',stars:'⭐',color:'var(--sprout)',ret:2,desc:'거의 안 흔들림',min:-5,max:8},
+  tulip:{name:'무럭 튤립',emoji:'🌷',stars:'⭐⭐',color:'var(--sun)',ret:6,desc:'적당히 흔들림',min:-10,max:14},
+  morning:{name:'변덕 나팔꽃',emoji:'🌺',stars:'⭐⭐⭐',color:'var(--berry)',ret:-8,desc:'폈다 졌다 출렁!',min:-15,max:20},
+};
+views.garden = () => `
+<div class="view active">
+  ${appBar('내 투자 정원','씨앗으로 직접 투자해요')}
+  <div class="scroll"><div class="pad">
+    <div class="pot-bed">
+      ${Object.entries(pots).map(([k,p])=>`
+        <div class="planter" onclick="openPlantModal('${k}')">
+          <div class="pot-stage">
+            <div class="stars stars-lbl">${p.stars}</div>
+            <div style="font-size:26px;${k==='morning'?'transform:rotate(-8deg)':''}">${p.emoji}</div>
+            <div class="pot">${p.name.split(' ')[1]||p.name}</div>
+          </div>
+          <div class="pname" style="color:${p.color}">${p.emoji} ${p.name}</div>
+          <div class="pmeta">${p.desc}</div>
+          <div class="pmeta" style="color:${p.color};font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800">${S.garden[k]}씨앗</div>
+        </div>`).join('')}
+    </div>
+    <div class="card" style="margin-top:13px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px">
+        <div class="sec-title">🌰 씨앗 나눠 심기</div>
+        <span class="sub">합계 <b id="gardenTotal" style="color:var(--gold)">100</b></span>
+      </div>
+      <div class="seed-row"><span class="snm" style="color:var(--sprout)">선인장</span><input type="range" min="0" max="100" id="gCactus" value="40" oninput="rebalance()"><span class="sv" id="vCactus">40</span></div>
+      <div class="seed-row"><span class="snm" style="color:var(--sun)">튤립</span><input type="range" min="0" max="100" id="gTulip" value="40" oninput="rebalance()"><span class="sv" id="vTulip">40</span></div>
+      <div class="seed-row"><span class="snm" style="color:var(--berry)">나팔꽃</span><input type="range" min="0" max="100" id="gMorning" value="20" oninput="rebalance()"><span class="sv" id="vMorning">20</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--text-soft);margin-top:8px"><span>🛡️ 변동 작음</span><span>변동 큼 🎢</span></div>
+      <div class="risk-meter"><div class="pin" id="riskPin" style="left:35%"></div></div>
+      <button class="btn" style="margin-top:13px" onclick="growGarden()">🌱 일주일 키우기</button>
+      <div class="warnbox" id="gardenMsg" style="margin-top:11px;display:none"></div>
+    </div>
+    <div class="card" style="margin-top:12px;background:#142e3a;border-color:#1f4a5a">
+      <div class="sec-title" style="color:var(--sky-soft)">📊 상한가·하한가 안전장치</div>
+      <p class="sub" style="margin-top:5px">하루에 씨앗은 <b style="color:var(--cream)">+15%까지</b>만 오르고 <b style="color:var(--cream)">-15%까지</b>만 내려가요. 한 번에 너무 많이 잃지 않도록 지켜줘요.</p>
+    </div>
+    <p class="sub" style="text-align:center;margin-top:12px;font-size:9.5px">분산할지 몰아 심을지는 내 마음 · 결과도 내 책임</p>
+  </div></div>
+  ${navBar('garden')}
+</div>`;
+afterRender.garden = rebalance;
+function rebalance(){
+  let a=+$('gCactus').value, b=+$('gTulip').value, c=+$('gMorning').value;
+  let tot=a+b+c||1;
+  a=Math.round(a/tot*100); b=Math.round(b/tot*100); c=100-a-b;
+  S.garden={cactus:a,tulip:b,morning:c};
+  $('vCactus').textContent=a; $('vTulip').textContent=b; $('vMorning').textContent=c;
+  $('gardenTotal').textContent=(a+b+c);
+  const risk=a*0.1+b*0.5+c*1.0;
+  $('riskPin').style.left=Math.min(96,risk)+'%';
+}
+function openPlantModal(k){
+  const p=pots[k];
+  openModal(`
+    <div style="text-align:center">
+      <div style="width:62px;height:62px;border-radius:50%;margin:0 auto;background:#1a3326;border:2.5px solid ${p.color};display:grid;place-items:center;font-size:30px">${p.emoji}</div>
+      <div class="title-lg" style="margin-top:10px">${p.name}에 심기</div>
+      <div class="sub" style="color:${p.color};margin-top:3px">${p.stars} ${p.desc}</div>
+    </div>
+    <div style="background:#13261a;border-radius:13px;padding:11px;margin-top:14px">
+      <div class="sub">심을 씨앗</div>
+      <div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:18px;color:var(--gold)">${S.garden[k]} 씨앗</div>
+    </div>
+    <div class="sub" style="margin-top:13px;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;color:var(--cream);font-size:12px">이만큼 변할 수 있어요</div>
+    <div style="height:14px;border-radius:7px;overflow:hidden;display:flex;margin:7px 0"><div style="width:50%;background:var(--berry-deep)"></div><div style="width:50%;background:#4caa32"></div></div>
+    <div style="display:flex;justify-content:space-between;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:11px"><span style="color:var(--berry)">최저 ${p.min}%</span><span style="color:var(--sprout)">최대 +${p.max}%</span></div>
+    <div style="background:#2a1f12;border:1.5px solid #c2731c;border-radius:13px;padding:11px;margin-top:13px;text-align:center">
+      <div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:11px;color:var(--gold)">⚠️ 잊지 마!</div>
+      <div class="sub" style="color:#f0dcc0;margin-top:2px;font-size:10.5px">씨앗이 늘 수도, 줄 수도 있어요.<br>이 선택의 결과는 내가 책임져요.</div>
+    </div>
+    <div class="check-row" id="plantCheck" onclick="this.classList.toggle('on')"><div class="check-box">✓</div><span class="sub" style="font-size:10.5px">이해했고, 그래도 심을래요</span></div>
+    <div style="display:flex;gap:9px">
+      <button class="btn ghost" style="flex:1" onclick="closeModal()">다시 생각</button>
+      <button class="btn gold" style="flex:1.3" onclick="confirmPlant('${k}')">심을래요 🌱</button>
+    </div>`);
+}
+function confirmPlant(k){
+  if(!$('plantCheck').classList.contains('on')){ toast('먼저 "이해했어요"에 체크해 주세요'); return; }
+  closeModal(); toast(pots[k].name+'에 씨앗을 심었어요 🌱');
+}
+function growGarden(){
+  const g=S.garden, cap=15, rnd=(lo,hi)=>Math.round(lo+Math.random()*(hi-lo));
+  const rC=rnd(0,4),rT=rnd(-6,12),rM=rnd(-cap,cap);
+  const total=Math.round((g.cactus*rC+g.tulip*rT+g.morning*rM)/100);
+  const concentrated=g.cactus>=80||g.tulip>=80||g.morning>=80;
+  const msg=$('gardenMsg'); msg.style.display='block';
+  if(concentrated){ msg.className='warnbox alert'; msg.innerHTML='<b>한 화분에 몰아 심었어요!</b> 그래서 이번 주 변동이 컸어요. 나눠 심으면 흔들림이 줄어들어요. 결과: <b>'+(total>=0?'+':'')+total+' 씨앗</b>'; }
+  else { msg.className='warnbox'; msg.innerHTML='<b>잘 나눠 심었어요!</b> 한 화분이 시들어도 다른 화분이 받쳐줘 변동이 작았어요. 결과: <b>'+(total>=0?'+':'')+total+' 씨앗</b>'; }
+  addSeeds(total);
+  toast('정원이 자랐어요! 이번 주 '+(total>=0?'+':'')+total+' 씨앗');
+}
+
+/* ============ 상점 ============ */
+let shopChoice=null;
+views.shop = () => `
+<div class="view active">
+  ${appBar('동네 상점','똑똑하게 사고 바꿔요')}
+  <div class="scroll"><div class="pad">
+    <div class="tabs">
+      <div class="tab ${S.shopTab==='practice'?'active':''}" onclick="S.shopTab='practice';go('shop')">🧠 연습 모드</div>
+      <div class="tab ${S.shopTab==='exchange'?'active':''}" onclick="S.shopTab='exchange';go('shop')">🎁 실물 교환</div>
+    </div>
+    <div style="margin-top:14px">${S.shopTab==='practice'?shopPractice():shopExchange()}</div>
+  </div></div>
+  ${navBar('shop')}
+</div>`;
+function shopPractice(){
+  return `
+    <div class="card" style="background:linear-gradient(120deg,#3a2418,#2a1c14);border-color:#c2731c;display:flex;align-items:center;gap:11px">
+      <div style="font-size:24px">📈</div>
+      <div><div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:11px;color:#ffc78a">물가 소식</div><div class="sub" style="font-size:10px">젤리 재료값 상승 · 100→120씨앗</div></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="sec-title">🍪 같은 젤리, 어디서 살까?</div>
+      <p class="sub" style="margin-top:3px">실제로 사는 건 아니에요. 더 이득인 곳을 고르면 절약한 만큼 보너스!</p>
+      <div style="display:flex;gap:10px;margin-top:11px">
+        <div class="shop-opt" id="optMart" onclick="pickShop('mart')">
+          <div class="se">🏬</div><div class="snm2">편의점</div><div class="sprice" style="color:var(--plum-text)">200</div>
+          <div class="smeta">🚶 2분<br>가깝지만 비싸요</div>
+        </div>
+        <div class="shop-opt" id="optMarket" onclick="pickShop('market')">
+          <div class="se">🛒</div><div class="snm2">시장</div><div class="sprice" style="color:var(--sprout)">170</div>
+          <div class="smeta">🚶 12분<br>멀지만 저렴해요</div>
+        </div>
+      </div>
+      <button class="btn" style="margin-top:13px" onclick="checkShop()">이 가게로 정했어요</button>
+    </div>
+    <div id="shopResult"></div>`;
+}
+function pickShop(s){
+  shopChoice=s;
+  $('optMart').classList.toggle('sel',s==='mart');
+  $('optMarket').classList.toggle('sel',s==='market');
+}
+function checkShop(){
+  if(!shopChoice){ toast('먼저 가게를 골라 주세요'); return; }
+  const res=$('shopResult');
+  if(shopChoice==='market'){
+    const bonus=6; addSeeds(bonus); addXp(20); celebrate();
+    res.innerHTML=`<div class="card" style="margin-top:12px;background:#13301f;border-color:var(--sprout);text-align:center">
+      <div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:14px;color:var(--sprout)">🎉 똑똑한 선택이에요!</div>
+      <p class="sub" style="margin-top:6px;color:#cfe6d4">시장이 30씨앗 더 쌌어요. 시간을 조금 더 쓰는 대신 씨앗을 아꼈죠. 그게 합리적 소비!</p>
+      <div style="background:#0f2417;border:1.5px solid #4caa32;border-radius:12px;padding:9px;margin-top:10px;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;color:var(--gold);font-size:12px">🪙 절약 보너스 +${bonus} 씨앗 · +20 XP</div>
+      <p class="sub" style="margin-top:8px;font-size:9.5px">💡 아낀 30씨앗의 20%를 똑똑한 선택 상으로 돌려줘요</p>
+    </div>`;
+  } else {
+    res.innerHTML=`<div class="card" style="margin-top:12px;background:#2a1c1c;border-color:var(--berry)">
+      <div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:13px;color:var(--berry)">🤔 다시 생각해볼까?</div>
+      <p class="sub" style="margin-top:6px;color:#f7c2cc">편의점은 30씨앗 더 비싸요. 급할 땐 괜찮지만, 시간이 있다면 시장이 더 이득이에요.</p>
+    </div>`;
+  }
+}
+function shopExchange(){
+  return `
+    <div class="card" style="background:#1a2e22;border-color:#3a6e2a;display:flex;align-items:center;gap:11px">
+      <div style="font-size:22px">🤝</div>
+      <div><div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:11px;color:#8fe0a0">부모님이 승인하면 진짜로 받아요</div><div class="sub" style="font-size:10px">교환 신청 → 부모 확인 → 실물 전달</div></div>
+    </div>
+    <div class="exch-item" style="margin-top:12px;border-color:#4caa32">
+      <div class="ei">🍬</div>
+      <div style="flex:1"><b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:13px">젤리 한 봉지</b><div class="sub" style="font-size:10px">진짜 간식으로 받기</div><span style="display:inline-block;margin-top:4px;background:#13301f;color:#8fe0a0;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:9px;padding:2px 8px;border-radius:8px">충분히 모음 ✓</span></div>
+      <button class="btn" style="width:auto;padding:10px 14px;font-size:12px" onclick="requestExchange('젤리 한 봉지',120)">120<br>바꾸기</button>
+    </div>
+    <div class="exch-item" style="margin-top:10px">
+      <div class="ei">✏️</div>
+      <div style="flex:1"><b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:13px">캐릭터 연필 세트</b><div class="sub" style="font-size:10px">갖고 싶던 문구류</div><span style="display:inline-block;margin-top:4px;background:#241a30;color:var(--plum-text);font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:9px;padding:2px 8px;border-radius:8px">35씨앗 더 필요</span></div>
+      <div style="text-align:center;color:var(--text-dim);font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:12px">370<br><span style="font-size:9px">모으는 중</span></div>
+    </div>
+    <div class="card" style="margin-top:12px;background:#142e3a;border-color:#1f4a5a;display:flex;align-items:center;gap:12px">
+      <div style="font-size:30px">🚲</div>
+      <div style="flex:1"><b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:13px">은하수 자전거</b><div class="sub" style="font-size:10px">큰 목표 · 차곡차곡 모으기</div>
+        <div style="height:11px;border-radius:6px;background:#0d2430;overflow:hidden;margin-top:6px"><div style="height:100%;background:var(--sky);width:62%"></div></div>
+        <div class="sub" style="font-size:9.5px;margin-top:3px">620 / 1000 씨앗 · 62% · 예상 9일 남음</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="sec-title" style="font-size:12.5px">🔄 어떻게 진짜로 받나요?</div>
+      <div style="margin-top:9px;display:flex;flex-direction:column;gap:8px">
+        ${[['1','#4caa32','내가 교환 신청 (씨앗 잠금)'],['2','#e0922c','부모님이 대시보드에서 확인·승인'],['3','#4fc3d9','실물 전달 + 씨앗 차감 완료']].map(([n,c,t])=>
+          `<div style="display:flex;align-items:center;gap:10px"><div style="width:22px;height:22px;border-radius:50%;background:${c};color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:11px;display:grid;place-items:center">${n}</div><span class="sub" style="font-size:11px;color:#cfd6d4">${t}</span></div>`).join('')}
+      </div>
+    </div>`;
+}
+function requestExchange(item,cost){
+  if(S.seeds<cost){ toast('씨앗이 부족해요'); return; }
+  openModal(`<div style="text-align:center">
+    <div style="font-size:40px">🍬</div>
+    <div class="title-lg" style="margin-top:8px">${item} 교환 신청</div>
+    <p class="sub" style="margin-top:8px">${cost}씨앗을 잠그고 보호자에게 승인을 요청해요.<br>승인 전까지는 취소할 수 있어요.</p>
+    <div style="display:flex;gap:9px;margin-top:16px">
+      <button class="btn ghost" style="flex:1" onclick="closeModal()">취소</button>
+      <button class="btn" style="flex:1.3" onclick="closeModal();toast('교환 신청 완료! 부모님 승인을 기다려요')">신청하기</button>
+    </div></div>`);
+}
+
+/* ============ 목표 ============ */
+views.goal = () => `
+<div class="view active">
+  ${appBar('나의 목표','꾸준함이 씨앗이 돼요')}
+  <div class="scroll"><div class="pad">
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:13px">
+        <div class="ring" style="width:64px;height:64px;background:conic-gradient(var(--sky) 62%, #0d2430 0)"><div style="width:48px;height:48px;border-radius:50%;background:var(--bg-card);display:grid;place-items:center;font-size:24px">🚲</div></div>
+        <div><b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:15px">은하수 자전거</b><div class="sub"><b style="color:var(--sky)">620</b> / 1000 씨앗</div><div class="sub" style="font-size:10px">현재 속도로 <b style="color:var(--cream)">예상 9일 뒤</b> 달성</div></div>
+      </div>
+      <div class="warnbox alert" style="margin-top:12px"><b>왜 늦어졌을까?</b><br>지난주에 게임 스킨(80씨앗)을 샀어요. 그래서 자전거 목표일이 <b>5일 늦어졌어요.</b> 다음엔 어떻게 할까?</div>
+    </div>
+    <div class="sec-title" style="margin:16px 2px 9px">🌟 과정 퀘스트 <span class="sub" style="font-size:10px">결과보다 노력!</span></div>
+    ${[['일주일 학습 계획 지키기','5일째 실천 중',30,true],['어려운 문제 다시 도전하기','틀려도 다시 시도하면 보상!',25,false],['책 읽고 가족에게 들려주기','오늘 읽은 내용 나누기',20,false]].map(([n,d,r,on],i)=>
+      `<div class="mission ${on?'done':''}" style="margin-bottom:9px" onclick="doQuest(this,${r},${on})"><div class="mico" style="background:#24402a">${on?'✓':'🌱'}</div><div class="mbody"><b>${n}</b><span>${d}</span></div><div class="reward-chip">+${r}</div></div>`).join('')}
+    <p class="sub" style="text-align:center;margin-top:8px;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:700;font-size:11px">✿ 성적이 아니라 '해낸 과정'이 씨앗이 돼요 ✿</p>
+  </div></div>
+  ${navBar('home')}
+</div>`;
+function doQuest(el,rew,already){
+  if(already||el.classList.contains('done')){ toast('이미 완료한 퀘스트예요'); return; }
+  el.classList.add('done'); el.querySelector('.mico').textContent='✓';
+  addSeeds(rew); addXp(25); toast('과정 보상! +'+rew+'씨앗 잘했어요 🌟'); celebrate();
+}
+
+/* ============ 마이페이지 ============ */
+views.my = () => `
+<div class="view active">
+  ${appBar('마이페이지','내 기록과 성장')}
+  <div class="scroll"><div class="pad">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 42% 35%,#d6ffa8,var(--sprout-bright),#4f9e2e);border:3px solid #3a7a26;display:grid;place-items:center;font-size:32px">${S.avatar}</div>
+      <div style="flex:1"><b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:18px">${S.name}</b>
+        <div style="margin-top:4px"><span class="pill" style="font-size:10px;padding:3px 9px">Lv.${S.level} 알뜰탐험가</span></div>
+        <div class="xp-track" style="margin-top:6px"><div class="xp-fill" data-xp style="width:${S.xp/S.xpMax*100}%"></div></div>
+      </div>
+    </div>
+    <div class="sec-title" style="margin:18px 2px 9px">📈 내 씨앗이 자라온 길</div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div><div class="sub">지금 <b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:15px;color:var(--gold)" data-seeds>${S.seeds}</b> 씨앗</div><div class="sub" style="color:var(--sprout);font-size:10px">지난주보다 +85 (+34%) ▲</div></div>
+      </div>
+      <svg viewBox="0 0 280 90" style="width:100%;margin-top:8px">
+        <polyline points="6,78 46,68 86,74 126,50 166,56 206,28 266,8" fill="none" stroke="var(--sprout)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <polygon points="6,78 46,68 86,74 126,50 166,56 206,28 266,8 266,90 6,90" fill="var(--sprout)" opacity="0.15"/>
+        ${[['6,78'],['46,68'],['126,50'],['206,28']].map(p=>`<circle cx="${p[0].split(',')[0]}" cy="${p[0].split(',')[1]}" r="3" fill="var(--sprout)"/>`).join('')}
+        <circle cx="266" cy="8" r="4.5" fill="#fff" stroke="#4caa32" stroke-width="2.5"/>
+      </svg>
+      <div style="display:flex;justify-content:space-between;font-size:8px;color:var(--text-dim)"><span>월</span><span>수</span><span>금</span><span>오늘</span></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:12px">
+      <div class="card" style="flex:1;text-align:center"><div class="sub" style="color:#8fe0c0">🪴 정원 수익률</div><div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:24px;color:var(--sprout);margin-top:6px">+12%</div><div class="sub" style="font-size:9px">4주 누적 · 분산할 때 안정적</div></div>
+      <div class="card" style="flex:1;text-align:center"><div class="sub" style="color:var(--sky-soft)">🐷 저축률</div><div class="ring" style="width:50px;height:50px;margin:6px auto 0;background:conic-gradient(var(--sky) 66%, #0a1c12 0)"><div style="width:38px;height:38px;border-radius:50%;background:var(--bg-card);display:grid;place-items:center;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:13px;color:var(--sky)">66%</div></div></div>
+    </div>
+    <div class="sec-title" style="margin:18px 2px 9px">🏅 나의 활동</div>
+    <div style="display:flex;gap:9px">
+      <div class="stat-mini" style="flex:1"><div class="num" style="color:var(--gold)">42</div><div class="sub" style="font-size:9px">완료 미션 ⚔️</div></div>
+      <div class="stat-mini" style="flex:1"><div class="num" style="color:var(--sprout)">18</div><div class="sub" style="font-size:9px">똑똑한 선택 🧠</div></div>
+      <div class="stat-mini" style="flex:1"><div class="num" style="color:var(--sky)">7</div><div class="sub" style="font-size:9px">연속 출석 🔥</div></div>
+    </div>
+    <div class="sec-title" style="margin:18px 2px 9px">⭐ 모은 배지 <span class="sub" style="font-size:10px">8 / 20</span></div>
+    <div class="card"><div style="display:flex;justify-content:space-around">
+      ${[['💧','절약왕','var(--sun)'],['🐷','저축러','var(--sprout)'],['🧠','똑똑소비','var(--sky)'],['🪴','정원사','var(--morning)'],['🔒','???','#2a3a2e']].map(([e,n,c])=>
+        `<div class="badge-wrap"><div class="badge-c" style="--bc:${c};${e==='🔒'?'opacity:.5':''}">${e}</div><span>${n}</span></div>`).join('')}
+    </div></div>
+    <div class="sec-title" style="margin:18px 2px 9px">📜 최근 기록</div>
+    <div class="card" style="padding:6px 14px">
+      ${[['🧠','절약 보너스','오늘 15:18','+6','up'],['💧','물 절약 미션','오늘 08:12','+15','up'],['🌺','정원 투자 (나팔꽃)','어제 19:30','-9','down'],['📚','학습 계획 5일째','어제 17:00','+30','up']].map(([e,n,t,a,c],i,arr)=>
+        `<div style="display:flex;align-items:center;gap:10px;padding:9px 0;${i<arr.length-1?'border-bottom:1.3px dashed var(--line)':''}"><div style="width:30px;height:30px;border-radius:9px;background:#1c3a26;display:grid;place-items:center;font-size:15px">${e}</div><div style="flex:1"><b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:11px">${n}</b><div class="sub" style="font-size:9px">${t}</div></div><b class="${c}" style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:12px">${a}</b></div>`).join('')}
+    </div>
+  </div></div>
+  ${navBar('my')}
+</div>`;
+
+/* ============ 부모 대시보드 ============ */
+views.parent = () => `
+<div class="view active">
+  <div class="appbar parent-bar"><div class="icon-btn" onclick="openDrawer()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line></svg></div><div class="who"><small>보호자 대시보드</small><b>${S.name}의 경제 정원 🌱</b></div><div class="sp"></div><div style="width:34px;height:34px;border-radius:50%;background:#2a2342;border:1.5px solid var(--plum-light);display:grid;place-items:center;font-size:17px">👩</div></div>
+  <div class="scroll" style="background:radial-gradient(circle at 50% 8%,#1e1838,#120e24)"><div class="pad">
+    <div class="sec-title" style="color:#f0eafb">📊 이번 주 한눈에 보기</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+      <div class="pstat"><div class="sub">보유 씨앗</div><div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:23px;color:var(--gold)" data-seeds>${S.seeds}</div><div class="sub" style="color:var(--sprout);font-size:9px">▲ 지난주 +85</div></div>
+      <div class="pstat"><div class="sub">저축률</div><div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:23px;color:var(--sky)">66%</div><div class="sub" style="color:var(--sprout);font-size:9px">▲ 잘하고 있어요</div></div>
+      <div class="pstat"><div class="sub">이번 주 미션</div><div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:23px;color:var(--plum-text)">7<span style="font-size:12px;color:var(--text-soft)"> / 10</span></div><div class="sub" style="font-size:9px">완료</div></div>
+      <div class="pstat"><div class="sub">자전거 목표</div><div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:23px;color:var(--sky)">62%</div><div class="sub" style="font-size:9px">예상 9일 남음</div></div>
+    </div>
+    <div class="sec-title" style="color:#f0eafb;margin:16px 2px 9px">🔔 승인 대기 1건</div>
+    <div class="pcard" style="border-color:#e0922c;background:linear-gradient(160deg,#2a2418,#241c12)">
+      <div style="display:flex;align-items:center;gap:11px">
+        <div style="width:46px;height:46px;border-radius:12px;background:#3a2e1a;display:grid;place-items:center;font-size:24px">🍬</div>
+        <div style="flex:1"><b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:12.5px;color:#f0eafb">젤리 한 봉지 교환 신청</b><div class="sub" style="color:#d8c0a0;font-size:10px">120씨앗 · 오늘 15:20 신청</div><div class="sub" style="font-size:9px;color:#a89878">'+S.name+'이가 이번 주 미션으로 모은 씨앗이에요</div></div>
+      </div>
+      <div style="display:flex;gap:9px;margin-top:11px">
+        <button class="btn" style="flex:1.3;padding:10px" onclick="this.closest('.pcard').style.display='none';toast('교환을 승인했어요. 실물을 전달해 주세요 🍬')">승인하기</button>
+        <button class="btn ghost" style="flex:1;padding:10px;color:var(--plum-text)" onclick="toast('나중에 다시 알려드릴게요')">나중에</button>
+      </div>
+    </div>
+    <div class="sec-title" style="color:#f0eafb;margin:16px 2px 9px">💱 씨앗 → 용돈 전환</div>
+    <div class="pcard" style="border-color:#c2731c;background:linear-gradient(135deg,#2e2418,#241c12)">
+      <div style="display:flex;align-items:center;justify-content:center;gap:14px">
+        <div style="text-align:center"><div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:24px;color:var(--gold)" id="cvSeed">100</div><div class="sub" style="font-size:9px">씨앗</div></div>
+        <div style="font-size:22px;color:#a89878">➜</div>
+        <div style="text-align:center"><div style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:24px;color:var(--sprout)" id="cvCash">1,000</div><div class="sub" style="font-size:9px">원</div></div>
+      </div>
+      <input type="range" min="0" max="${S.seeds}" value="100" step="10" style="width:100%;accent-color:var(--plum-light);margin-top:8px" oninput="cvUpdate(this.value)">
+      <div class="sub" style="text-align:center;font-size:9.5px;margin-top:2px">전환 비율: 1 씨앗 = 10원 (보호자가 설정)</div>
+      <button class="btn plum" style="margin-top:12px" onclick="cvDo()">💸 용돈으로 전환하기</button>
+    </div>
+    <div class="sec-title" style="color:#f0eafb;margin:16px 2px 9px">⚙️ 우리 가족 경제 규칙</div>
+    <div class="pcard">
+      ${[['물가 상승 모드','가끔 물건값이 올라요',true],['상한가/하한가 보호 (±15%)','투자 변동을 안전하게 제한',true],['과정 보상 우선','결과보다 노력에 보상',true],['고액 지출 승인 (100씨앗+)','큰 교환은 부모 확인 후',true]].map(([n,d,on],i,arr)=>
+        `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;${i<arr.length-1?'border-bottom:1.3px dashed #2e2748':''}"><div><b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:12px;color:#e0d6f0">${n}</b><div class="sub" style="font-size:9.5px">${d}</div></div><div class="switch ${on?'on':''}" onclick="this.classList.toggle('on')"><div class="knob"></div></div></div>`).join('')}
+    </div>
+    <button class="btn ghost" style="margin-top:14px;color:var(--plum-text)" onclick="go('login')">🚪 로그아웃</button>
+  </div></div>
+</div>`;
+function cvUpdate(v){ $('cvSeed').textContent=v; $('cvCash').textContent=(v*10).toLocaleString(); }
+function cvDo(){ const v=+$('cvSeed').textContent; toast(v+'씨앗을 '+(v*10).toLocaleString()+'원 용돈으로 전환했어요 💸'); }
+
+/* ============ 공통 서브 헤더 ============ */
+function subBar(title, back){
+  return `<div class="appbar"><div class="icon-btn" onclick="go('${back||'home'}')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div class="who"><b>${title}</b></div></div>`;
+}
+
+/* ============ 알림 ============ */
+const notiData = [
+  {ico:'🍬',cls:'#3a2e1a',t:'교환이 승인됐어요',d:'젤리 한 봉지를 받을 수 있어요. 부모님께 가보세요!',time:'방금',unread:true,accent:'var(--sprout)'},
+  {ico:'⚔️',cls:'#1c3a26',t:'씨앗 대결이 시작됐어요',d:'민준이와 오늘의 탐험 대결! 지금 85 대 62로 앞서고 있어요.',time:'1시간 전',unread:true,accent:'var(--sky)'},
+  {ico:'🌺',cls:'#2a1a30',t:'정원 결과가 나왔어요',d:'나팔꽃에 몰아 심어서 이번 주 변동이 컸어요. -9씨앗.',time:'어제',unread:false,accent:'var(--berry)'},
+  {ico:'🐷',cls:'#13261a',t:'저축 목표 달성!',d:'이번 주 저축률 66%를 넘겼어요. 저축러 배지를 받았어요.',time:'어제',unread:false,accent:'var(--gold)'},
+  {ico:'🎯',cls:'#142e3a',t:'자전거 목표가 가까워졌어요',d:'620/1000 씨앗! 예상 9일 남았어요. 조금만 더 힘내요.',time:'2일 전',unread:false,accent:'var(--sky)'},
+];
+views.notifications = () => `
+<div class="view active">
+  ${subBar('알림','home')}
+  <div class="scroll"><div class="pad">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <span class="sub">읽지 않은 알림 <b style="color:var(--sprout)">${notiData.filter(n=>n.unread).length}개</b></span>
+      <span class="sub" style="color:var(--sprout);cursor:pointer" onclick="notiData.forEach(n=>n.unread=false);go('notifications')">모두 읽음</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+    ${notiData.map(n=>`
+      <div class="card" style="padding:12px;display:flex;gap:11px;align-items:flex-start;${n.unread?'border-color:'+n.accent:''}">
+        <div style="width:40px;height:40px;border-radius:12px;background:${n.cls};display:grid;place-items:center;font-size:20px;flex:none;position:relative">${n.ico}${n.unread?`<span style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;border-radius:50%;background:${n.accent};border:2px solid var(--bg-card)"></span>`:''}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;justify-content:space-between;gap:8px"><b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:12.5px;color:var(--cream)">${n.t}</b><span class="sub" style="font-size:9px;white-space:nowrap">${n.time}</span></div>
+          <p class="sub" style="font-size:10.5px;margin-top:3px;line-height:1.5">${n.d}</p>
+        </div>
+      </div>`).join('')}
+    </div>
+    <p class="sub" style="text-align:center;margin-top:16px;font-size:9.5px">지난 알림은 30일간 보관돼요</p>
+  </div></div>
+  ${navBar('home')}
+</div>`;
+
+/* ============ 설정 ============ */
+const settingsState = {
+  push:true, battlePush:true, sound:true, reduceMotion:false,
+};
+views.settings = () => `
+<div class="view active">
+  ${subBar('설정','home')}
+  <div class="scroll"><div class="pad">
+    <div style="display:flex;align-items:center;gap:13px;margin-bottom:6px">
+      <div style="width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 42% 35%,#d6ffa8,var(--sprout-bright),#4f9e2e);border:2.5px solid #3a7a26;display:grid;place-items:center;font-size:26px">${S.avatar}</div>
+      <div style="flex:1"><b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:16px">${S.name}</b><div class="sub" style="font-size:10px">아이 계정 · 가족코드 7K2P9</div></div>
+      <div class="icon-btn" onclick="openProfileEdit()">✏️</div>
+    </div>
+
+    <div class="sec-title" style="margin:16px 2px 9px;font-size:12.5px">🔔 알림</div>
+    <div class="card" style="padding:6px 14px">
+      ${settingRow('push','푸시 알림','새로운 소식을 받아요')}
+      ${settingRow('battlePush','대결 알림','친구 대결 소식 받기',true)}
+    </div>
+
+    <div class="sec-title" style="margin:16px 2px 9px;font-size:12.5px">🎮 게임</div>
+    <div class="card" style="padding:6px 14px">
+      ${settingRow('sound','소리 효과','터치·획득 효과음',true)}
+      ${settingRow('reduceMotion','애니메이션 줄이기','움직임을 최소화해요',true)}
+    </div>
+
+    <div class="sec-title" style="margin:16px 2px 9px;font-size:12.5px">👨‍👩‍👧 가족</div>
+    <div class="card" style="padding:6px 14px">
+      ${settingLink('🔗','가족 연결 관리','보호자: 엄마',false,"go('familymanage')")}
+      ${settingLink('💱','용돈 전환 비율','1씨앗 = 10원',true,"openConversionInfo()")}
+    </div>
+
+    <div class="sec-title" style="margin:16px 2px 9px;font-size:12.5px">ℹ️ 정보</div>
+    <div class="card" style="padding:6px 14px">
+      ${settingLink('📄','이용약관','',false,"openLegal('terms')")}
+      ${settingLink('🔒','개인정보처리방침','',false,"openLegal('privacy')")}
+      ${settingLink('⭐','앱 평가하기','',true,"openRateApp()")}
+    </div>
+
+    <button class="btn ghost" style="margin-top:16px;color:#e08a8a" onclick="go('login')">🚪 로그아웃</button>
+    <p class="sub" style="text-align:center;margin-top:12px;font-size:9px">새싹테라스 v1.0.0</p>
+  </div></div>
+  ${navBar('home')}
+</div>`;
+function settingRow(key,title,desc,last){
+  return `<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;${last?'':'border-bottom:1.3px dashed var(--line)'}">
+    <div><b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:12.5px;color:var(--cream)">${title}</b><div class="sub" style="font-size:9.5px">${desc}</div></div>
+    <div class="switch ${settingsState[key]?'on':''}" onclick="settingsState['${key}']=!settingsState['${key}'];this.classList.toggle('on');toast('${title} '+(settingsState['${key}']?'켜짐':'꺼짐'))"><div class="knob"></div></div>
+  </div>`;
+}
+function settingLink(ico,title,val,last,handler){
+  return `<div style="display:flex;align-items:center;gap:11px;padding:11px 0;${last?'':'border-bottom:1.3px dashed var(--line)'};cursor:pointer" onclick="${handler||`toast('${title} (준비 중)')`}">
+    <span style="font-size:16px;width:22px;text-align:center">${ico}</span>
+    <b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:12.5px;color:var(--cream);flex:1">${title}</b>
+    <span class="sub" style="font-size:10px">${val}</span>
+    <span class="sub">›</span>
+  </div>`;
+}
+
+/* ============ 프로필 편집 ============ */
+const avatarChoices = ['🧒','👦','👧','🐱','🐶','🐰','🦊','🐼'];
+function openProfileEdit(){
+  openModal(`
+    <div style="text-align:center">
+      <div id="peAvatarPreview" style="width:72px;height:72px;border-radius:50%;margin:0 auto;background:radial-gradient(circle at 42% 35%,#d6ffa8,var(--sprout-bright),#4f9e2e);border:3px solid #3a7a26;display:grid;place-items:center;font-size:36px">${S.avatar}</div>
+      <div class="title-lg" style="margin-top:10px">프로필 편집</div>
+    </div>
+    <div class="sub" style="margin-top:14px;margin-bottom:6px">아바타 고르기</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">
+      ${avatarChoices.map(a=>`<div class="avatar-pick ${a===S.avatar?'sel':''}" data-av="${a}" onclick="pickAvatar('${a}',this)" style="width:40px;height:40px;border-radius:12px;background:#13261a;border:2px solid ${a===S.avatar?'var(--sprout)':'var(--line2)'};display:grid;place-items:center;font-size:20px;cursor:pointer">${a}</div>`).join('')}
+    </div>
+    <div class="sub" style="margin-top:16px;margin-bottom:6px">이름</div>
+    <input id="peNameInput" value="${S.name}" maxlength="6" style="width:100%;background:#0d2418;border:2px solid var(--line2);border-radius:12px;padding:12px;font-size:15px;font-weight:800;color:var(--cream);text-align:center">
+    <div style="display:flex;gap:9px;margin-top:16px">
+      <button class="btn ghost" style="flex:1" onclick="closeModal()">취소</button>
+      <button class="btn" style="flex:1.3" onclick="saveProfile()">저장하기</button>
+    </div>`);
+}
+let tempAvatar = null;
+function pickAvatar(a,el){
+  tempAvatar=a;
+  document.querySelectorAll('.avatar-pick').forEach(x=>x.style.borderColor='var(--line2)');
+  el.style.borderColor='var(--sprout)';
+  $('peAvatarPreview').textContent=a;
+}
+function saveProfile(){
+  const newName=$('peNameInput').value.trim();
+  if(!newName){ toast('이름을 입력해 주세요'); return; }
+  S.name=newName;
+  if(tempAvatar) S.avatar=tempAvatar;
+  tempAvatar=null;
+  closeModal();
+  go(currentView);
+  toast('프로필을 저장했어요 ✨');
+}
+
+/* ============ AR 지도 (미니맵) ============ */
+function openArMap(){
+  openModal(`
+    <div style="text-align:center">
+      <div class="title-lg">📍 주변 탐험 지도</div>
+      <p class="sub" style="margin-top:4px">오늘 발견할 수 있는 씨앗 지점이에요</p>
+    </div>
+    <div style="position:relative;width:100%;aspect-ratio:1;margin-top:14px;border-radius:18px;background:radial-gradient(circle,#1c3a26,#0d2418 75%);border:2px solid #2f6043;overflow:hidden">
+      <div style="position:absolute;inset:0;background:repeating-radial-gradient(circle,transparent,transparent 24px,rgba(127,224,90,.08) 25px)"></div>
+      <div style="position:absolute;top:50%;left:50%;width:14px;height:14px;border-radius:50%;background:var(--sky);border:2px solid #fff;transform:translate(-50%,-50%);box-shadow:0 0 10px var(--sky)"></div>
+      <div style="position:absolute;top:50%;left:50%;font-size:9px;color:var(--sky-soft);transform:translate(6px,-4px);font-weight:800">나</div>
+      <div style="position:absolute;top:28%;left:36%;font-size:22px;animation:ctbob 2s ease-in-out infinite">🌰</div>
+      <div style="position:absolute;top:64%;left:66%;font-size:22px;animation:ctbob 2.3s .3s ease-in-out infinite">🌰</div>
+      <div style="position:absolute;top:70%;left:24%;font-size:20px;animation:ctbob 2.1s .6s ease-in-out infinite">💧</div>
+    </div>
+    <div class="warnbox" style="margin-top:13px">🔭 근처에 씨앗 <b>3곳</b>이 있어요! 카메라를 천천히 움직이며 찾아보세요.</div>
+    <button class="btn" style="margin-top:13px" onclick="closeModal()">확인했어요</button>`);
+}
+
+/* ============ 가족 연결 관리 ============ */
+views.familymanage = () => `
+<div class="view active">
+  ${subBar('가족 연결 관리','settings')}
+  <div class="scroll"><div class="pad">
+    <div class="card" style="text-align:center;border-color:var(--plum-light);background:linear-gradient(160deg,#241a30,#1a1428)">
+      <div style="width:56px;height:56px;border-radius:50%;margin:0 auto;background:#372a52;display:grid;place-items:center;font-size:28px">👩</div>
+      <b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:14px;display:block;margin-top:8px">엄마 (보호자)</b>
+      <div class="sub" style="margin-top:2px">가족 코드 7K2P9 · 2026.06.15 연결됨</div>
+      <span style="display:inline-block;margin-top:8px;background:#1c4a2e;color:#9be07a;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:800;font-size:9.5px;padding:3px 10px;border-radius:10px">🟢 연결됨</span>
+    </div>
+    <div class="sec-title" style="margin:16px 2px 9px;font-size:12.5px">⚙️ 연결 관리</div>
+    <div class="card" style="padding:6px 14px">
+      ${settingLink('🔄','새 가족 코드 요청','',false,"toast('보호자에게 새 코드 요청을 보냈어요')")}
+      ${settingLink('👥','다른 보호자 추가','최대 2명',true,"toast('아빠 초대 링크를 만들었어요')")}
+    </div>
+    <button class="btn ghost" style="margin-top:16px;color:#e08a8a" onclick="confirmDisconnect()">🔌 가족 연결 해제</button>
+    <p class="sub" style="text-align:center;margin-top:10px;font-size:9.5px">연결을 해제하면 정원 데이터에 접근할 수 없어요</p>
+  </div></div>
+</div>`;
+function confirmDisconnect(){
+  openModal(`<div style="text-align:center">
+    <div style="font-size:36px">⚠️</div>
+    <div class="title-lg" style="margin-top:8px">정말 연결을 해제할까요?</div>
+    <p class="sub" style="margin-top:8px">해제하면 보호자가 내 활동을 볼 수 없고<br>씨앗을 용돈으로 바꾸기도 어려워져요.</p>
+    <div style="display:flex;gap:9px;margin-top:16px">
+      <button class="btn ghost" style="flex:1" onclick="closeModal()">그대로 둘래요</button>
+      <button class="btn" style="flex:1;background:linear-gradient(180deg,#f56b8a,#c43a5c);box-shadow:0 5px 0 #7a2438" onclick="closeModal();go('settings');toast('연결이 해제됐어요')">해제하기</button>
+    </div>`);
+}
+
+/* ============ 용돈 전환 비율 안내 ============ */
+function openConversionInfo(){
+  openModal(`
+    <div style="text-align:center">
+      <div style="font-size:36px">💱</div>
+      <div class="title-lg" style="margin-top:6px">용돈 전환 비율</div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-top:16px;background:#13261a;border-radius:14px;padding:16px">
+      <div style="text-align:center"><div style="font-weight:800;font-size:26px;color:var(--gold)">1</div><div class="sub" style="font-size:9px">씨앗</div></div>
+      <div style="font-size:20px;color:var(--text-dim)">=</div>
+      <div style="text-align:center"><div style="font-weight:800;font-size:26px;color:var(--sprout)">10</div><div class="sub" style="font-size:9px">원</div></div>
+    </div>
+    <div class="warnbox" style="margin-top:14px">이 비율은 <b>보호자만</b> 바꿀 수 있어요. 바꾸고 싶다면 보호자에게 이야기해 보세요!</div>
+    <button class="btn" style="margin-top:14px" onclick="closeModal()">확인했어요</button>`);
+}
+
+/* ============ 약관 / 개인정보처리방침 ============ */
+const legalTexts = {
+  terms: {title:'이용약관', body:'제1조 (목적)\n이 약관은 새싹테라스(이하 "회사")가 제공하는 서비스 이용과 관련하여 회원과 회사 간의 권리·의무를 규정합니다.\n\n제2조 (미성년자 이용)\n만 14세 미만 아동은 법정대리인(보호자)의 동의와 가족 코드 연결을 통해 서비스를 이용할 수 있습니다.\n\n제3조 (가상 자산)\n서비스 내 "씨앗"은 실제 화폐가 아니며, 보호자 승인 절차를 거쳐 약정된 비율로 용돈 전환이 이루어질 수 있습니다.\n\n(이하 생략 · 데모용 예시 약관입니다)'},
+  privacy: {title:'개인정보처리방침', body:'1. 수집하는 개인정보 항목\n닉네임, 아바타, 활동 기록(미션 완료, 씨앗 획득 내역)\n\n2. 만 14세 미만 아동 정보 처리\n아동의 개인정보는 법정대리인(보호자)의 동의 하에 수집되며, 보호자는 언제든 자녀의 정보 열람·삭제를 요청할 수 있습니다.\n\n3. 보유 및 이용 기간\n가족 연결 해제 시 관련 활동 기록은 30일 이내 파기됩니다.\n\n(이하 생략 · 데모용 예시 방침입니다)'},
+};
+function openLegal(key){
+  const d=legalTexts[key];
+  openModal(`
+    <div class="title-lg" style="text-align:center">${d.title}</div>
+    <div style="max-height:280px;overflow-y:auto;margin-top:14px;background:#0d2418;border-radius:14px;padding:14px">
+      <p class="sub" style="white-space:pre-line;font-size:11px;line-height:1.7;color:#cfe6d4">${d.body}</p>
+    </div>
+    <button class="btn" style="margin-top:14px" onclick="closeModal()">닫기</button>`);
+}
+
+/* ============ 앱 평가하기 ============ */
+let rateValue = 0;
+function openRateApp(){
+  rateValue=0;
+  openModal(`
+    <div style="text-align:center">
+      <div style="font-size:38px">🌱</div>
+      <div class="title-lg" style="margin-top:8px">새싹테라스, 어땠나요?</div>
+      <p class="sub" style="margin-top:6px">별점을 남겨 주면 더 좋은 앱을 만드는 데 도움이 돼요</p>
+      <div id="starRow" style="display:flex;justify-content:center;gap:6px;margin-top:14px;font-size:30px">
+        ${[1,2,3,4,5].map(i=>`<span data-star="${i}" onclick="setStar(${i})" style="cursor:pointer;filter:grayscale(1);opacity:.4">⭐</span>`).join('')}
+      </div>
+    </div>
+    <div style="display:flex;gap:9px;margin-top:18px">
+      <button class="btn ghost" style="flex:1" onclick="closeModal()">다음에</button>
+      <button class="btn gold" style="flex:1.3" onclick="submitRate()">평가 남기기</button>
+    </div>`);
+}
+function setStar(n){
+  rateValue=n;
+  document.querySelectorAll('#starRow span').forEach(s=>{
+    const v=+s.dataset.star;
+    s.style.filter=v<=n?'none':'grayscale(1)'; s.style.opacity=v<=n?'1':'.4';
+  });
+}
+function submitRate(){
+  if(rateValue===0){ toast('별점을 선택해 주세요'); return; }
+  closeModal();
+  celebrate();
+  toast('별 '+rateValue+'개 평가 감사해요! 🌱');
+}
+
+/* ============ 도움말 ============ */
+
+const faqData = [
+  {q:'씨앗은 어떻게 모아요?',a:'AR 탐험에서 씨앗 토큰을 줍거나, 오늘의 미션을 완료하거나, 똑똑하게 사는 연습에서 절약 보너스를 받으면 씨앗이 쌓여요.'},
+  {q:'씨앗을 진짜 용돈으로 바꿀 수 있어요?',a:'네! 모은 씨앗은 보호자가 용돈으로 바꿔줄 수 있어요. 기본은 1씨앗 = 10원이고, 비율은 보호자가 정해요.'},
+  {q:'정원(화분)은 뭐예요?',a:'모은 씨앗으로 해보는 투자 연습이에요. 선인장⭐·튤립⭐⭐·나팔꽃⭐⭐⭐ 중에 골라 심는데, 별이 많을수록 크게 늘거나 줄 수 있어요. 결과는 내 책임이에요.'},
+  {q:'한 화분에 다 심어도 돼요?',a:'돼요. 몰아 심을지 나눠 심을지는 내 마음이에요. 다만 한 곳에 몰면 변동이 커요. 나눠 심으면 한 화분이 시들어도 다른 화분이 받쳐줘요.'},
+  {q:'씨앗을 잃을 수도 있어요?',a:'투자한 화분이 시들면 씨앗이 줄 수 있어요. 하지만 하루 -15%까지만 내려가는 안전장치가 있어서 한 번에 많이 잃지는 않아요.'},
+  {q:'실물은 어떻게 받아요?',a:'상점의 실물 교환에서 신청하면, 보호자가 확인·승인한 뒤 진짜 물건을 받아요. 승인 전까지는 취소할 수 있어요.'},
+];
+let faqOpen = -1;
+views.help = () => `
+<div class="view active">
+  ${subBar('도움말','home')}
+  <div class="scroll"><div class="pad">
+    <div class="card" style="text-align:center;background:linear-gradient(160deg,#1f4a30,#143020);border-color:#2f6043">
+      <div style="font-size:38px">🌱</div>
+      <b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:15px;display:block;margin-top:6px">새싹테라스가 처음이에요?</b>
+      <p class="sub" style="margin-top:6px">씨앗을 모으고, 키우고, 진짜 용돈으로 바꾸는<br>우리 집 경제 정원이에요.</p>
+      <button class="btn" style="margin-top:12px" onclick="openTutorial()">▶ 사용법 다시 보기</button>
+    </div>
+
+    <div class="sec-title" style="margin:18px 2px 10px;font-size:12.5px">❓ 자주 묻는 질문</div>
+    <div id="faqList" style="display:flex;flex-direction:column;gap:9px">${renderFaq()}</div>
+
+    <div class="card" style="margin-top:16px;display:flex;align-items:center;gap:12px">
+      <div style="font-size:26px">💬</div>
+      <div style="flex:1"><b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:12.5px">더 궁금한 게 있나요?</b><div class="sub" style="font-size:10px">보호자와 함께 문의를 보낼 수 있어요</div></div>
+      <button class="btn" style="width:auto;padding:9px 13px;font-size:12px" onclick="go('chatbot')">문의</button>
+    </div>
+    <p class="sub" style="text-align:center;margin-top:14px;font-size:9px">새싹테라스 v1.0.0 · 도움말</p>
+  </div></div>
+  ${navBar('home')}
+</div>`;
+function renderFaq(){
+  return faqData.map((f,i)=>`
+    <div class="card" style="padding:0;cursor:pointer" onclick="toggleFaq(${i})">
+      <div style="display:flex;align-items:center;gap:9px;padding:13px 14px">
+        <span style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;color:var(--sprout);font-size:13px">Q</span>
+        <b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:12px;color:var(--cream);flex:1">${f.q}</b>
+        <span class="sub" style="transition:.2s;transform:rotate(${faqOpen===i?'180':'0'}deg)">⌄</span>
+      </div>
+      ${faqOpen===i?`<div style="padding:0 14px 14px 32px"><p class="sub" style="font-size:11px;line-height:1.6">${f.a}</p></div>`:''}
+    </div>`).join('');
+}
+function toggleFaq(i){ faqOpen = faqOpen===i?-1:i; $('faqList').innerHTML=renderFaq(); }
+
+/* ============ 튜토리얼 (온보딩 슬라이드 다시보기) ============ */
+const tutorSlides = [
+  {hero:'🌱',orbits:['💧','♻️','🌰'],bg:'radial-gradient(circle at 50% 38%,#1e4730,#143020)',eyebrow:'SAESSAK TERRACE',title:'새싹테라스에<br>오신 걸 환영해요',desc:'현실에서 작은 좋은 행동을 하면<br>씨앗이 자라는 나만의 경제 정원이에요.'},
+  {hero:'🗺️',orbits:['🔭','💧','🏷️'],bg:'radial-gradient(circle at 50% 40%,#3a2f18,#241c12)',eyebrow:'밖으로 나가요',title:'탐험하며<br>씨앗을 모아요',desc:'물을 아끼고 쓰레기를 줍는 미션을<br>카메라로 비추면 씨앗이 나타나요.'},
+  {hero:'🪴',orbits:['🌵','🌷','🌺'],bg:'radial-gradient(circle at 50% 40%,#14342a,#0d241e)',eyebrow:'차곡차곡 키워요',title:'모은 씨앗을<br>심고 키워요',desc:'화분에 씨앗을 나눠 심으면 무럭무럭!<br>목표를 정하고 용돈으로도 바꿀 수 있어요.'},
+  {hero:'💸',orbits:['🐷','🎯','🎁'],bg:'radial-gradient(circle at 50% 40%,#1e3a44,#142e3a)',eyebrow:'진짜로 바꿔요',title:'모은 씨앗을<br>용돈으로!',desc:'보호자가 승인하면 씨앗을 진짜 용돈이나<br>선물로 바꿔줘요. 1씨앗 = 10원이에요.'},
+];
+let tutorIdx = 0;
+let tutorExit = 'login'; // 첫 실행이면 login, 도움말에서 오면 help
+views.tutorial = () => {
+  const s = tutorSlides[tutorIdx];
+  const last = tutorIdx === tutorSlides.length-1;
+  return `
+<div class="view active">
+  <div class="appbar"><div class="sp"></div><div class="icon-btn" onclick="go('${tutorExit}')" style="font-size:14px">✕</div></div>
+  <div class="scroll"><div class="pad" style="display:flex;flex-direction:column;min-height:100%;padding-top:4px">
+    <div style="flex:1;border-radius:28px;background:${s.bg};border:3px solid rgba(255,255,255,.06);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:280px;box-shadow:0 12px 0 rgba(0,0,0,.15)">
+      <div style="position:absolute;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(143,209,79,.2),transparent 65%)"></div>
+      <div style="position:absolute;top:20%;left:16%;font-size:28px;animation:floaty 4s ease-in-out infinite">${s.orbits[0]}</div>
+      <div style="position:absolute;top:26%;right:14%;font-size:26px;animation:floaty 5s .5s ease-in-out infinite">${s.orbits[1]}</div>
+      <div style="position:absolute;bottom:20%;left:24%;font-size:24px;animation:floaty 4.5s .8s ease-in-out infinite">${s.orbits[2]}</div>
+      <div style="font-size:96px;filter:drop-shadow(0 8px 12px rgba(0,0,0,.3));animation:ctbob 3s ease-in-out infinite">${s.hero}</div>
+    </div>
+    <div class="eyebrow" style="text-align:center;margin-top:20px">${s.eyebrow}</div>
+    <div class="title-lg" style="text-align:center;font-size:23px;margin-top:8px;line-height:1.3">${s.title}</div>
+    <p class="sub" style="text-align:center;margin-top:11px;font-size:13px">${s.desc}</p>
+    <div style="display:flex;justify-content:center;gap:7px;margin:20px 0 14px">
+      ${tutorSlides.map((_,i)=>`<div style="height:8px;border-radius:4px;transition:.3s;width:${i===tutorIdx?'24px':'8px'};background:${i===tutorIdx?'var(--sprout)':'var(--line2)'}"></div>`).join('')}
+    </div>
+    <button class="btn" onclick="${last?`go('${tutorExit}')`:'tutorNext()'}">${last?(tutorExit==='login'?'시작하기 🌱':'다 배웠어요! 🌱'):'다음'}</button>
+    ${last?'':`<div class="sub" style="text-align:center;margin-top:12px;cursor:pointer" onclick="go('${tutorExit}')">건너뛰기</div>`}
+  </div></div>
+</div>`;
+};
+afterRender.tutorial = () => {};
+function tutorNext(){ if(tutorIdx<tutorSlides.length-1){ tutorIdx++; go('tutorial'); } }
+function openTutorial(){ tutorIdx=0; tutorExit='help'; go('tutorial'); }
+function startOnboarding(){ tutorIdx=0; tutorExit='login'; go('tutorial'); }
+
+/* ============ 문의 챗봇 ============ */
+const chatFlow = {
+  start: { bot:['안녕하세요! 새싹테라스 도우미 새싹이예요 🌱','무엇이 궁금한가요? 아래에서 골라 주세요!'],
+    options:[['q_seed','씨앗을 못 받았어요'],['q_exchange','교환 신청이 안 돼요'],['q_parent','보호자 연결 문제'],['q_etc','다른 문의']] },
+  q_seed: { bot:['미션을 완료했는데 씨앗이 안 들어왔나요?','보통은 바로 반영되지만, 가끔 몇 분 걸릴 수 있어요. 앱을 새로고침해 보고, 그래도 안 되면 아래로 알려 주세요!'],
+    options:[['solved','해결됐어요 👍'],['human','상담원 연결'],['start','← 처음으로']] },
+  q_exchange: { bot:['실물 교환은 3단계로 진행돼요:','1) 내가 신청 → 2) 보호자 승인 → 3) 실물 전달','보호자 승인 대기 중이면 조금만 기다려 주세요. 씨앗이 부족하면 신청이 안 될 수 있어요.'],
+    options:[['solved','해결됐어요 👍'],['human','상담원 연결'],['start','← 처음으로']] },
+  q_parent: { bot:['보호자 연결은 가족 코드로 이뤄져요.','보호자가 만든 5자리 코드를 아이가 입력하면 같은 정원을 쓰게 돼요. 코드가 안 맞으면 대소문자를 확인해 주세요!'],
+    options:[['solved','해결됐어요 👍'],['human','상담원 연결'],['start','← 처음으로']] },
+  q_etc: { bot:['다른 문의사항이 있으시군요!','자세한 내용을 남겨 주시면 보호자 이메일로 답변을 보내드릴게요.'],
+    options:[['human','상담원 연결'],['start','← 처음으로']] },
+  solved: { bot:['도움이 되었다니 다행이에요! 🌱','즐거운 새싹테라스 되세요~'], options:[['start','다른 질문하기']] },
+  human: { bot:['상담원 연결을 요청했어요! 📩','보호자 계정 이메일로 24시간 안에 답변을 드릴게요. 조금만 기다려 주세요.'], options:[['start','← 처음으로']] },
+};
+let chatLog = [];
+views.chatbot = () => `
+<div class="view active">
+  <div class="appbar"><div class="icon-btn" onclick="go('help')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></div>
+    <div style="width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 42% 35%,#d6ffa8,var(--sprout-bright),#4f9e2e);border:2px solid #3a7a26;display:grid;place-items:center;font-size:18px">🌱</div>
+    <div class="who"><small style="color:var(--sprout)">● 온라인</small><b>새싹이 상담</b></div>
+  </div>
+  <div class="scroll" id="chatScroll"><div class="pad" id="chatBody" style="display:flex;flex-direction:column;gap:10px"></div></div>
+</div>`;
+afterRender.chatbot = () => { chatLog=[]; chatStep('start',true); };
+function chatStep(key,first){
+  const node=chatFlow[key];
+  const body=$('chatBody');
+  // 사용자가 고른 선택지(첫 진입 제외)면 사용자 버블 추가
+  if(!first && chatFlow._lastLabel){
+    body.insertAdjacentHTML('beforeend',
+      `<div style="align-self:flex-end;max-width:78%;background:var(--moss);color:#fff;border-radius:16px 16px 4px 16px;padding:10px 13px;font-size:12.5px">${chatFlow._lastLabel}</div>`);
+  }
+  // 봇 메시지들
+  node.bot.forEach((line,i)=>{
+    body.insertAdjacentHTML('beforeend',
+      `<div style="display:flex;gap:8px;align-items:flex-end;max-width:82%">
+        ${i===node.bot.length-1?'<div style="width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 42% 35%,#d6ffa8,var(--sprout-bright),#4f9e2e);border:1.5px solid #3a7a26;display:grid;place-items:center;font-size:14px;flex:none">🌱</div>':'<div style="width:26px;flex:none"></div>'}
+        <div style="background:var(--bg-card);border:1.5px solid var(--line2);border-radius:16px 16px 16px 4px;padding:10px 13px;font-size:12.5px;color:var(--cream);line-height:1.5">${line}</div>
+      </div>`);
+  });
+  // 선택지 버튼
+  const opts=node.options.map(([k,label])=>
+    `<button onclick="chatPick('${k}','${label.replace(/'/g,'')}')" style="border:1.5px solid var(--sprout);background:rgba(127,224,90,.08);color:var(--sprout);font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:12px;padding:9px 14px;border-radius:14px;cursor:pointer">${label}</button>`).join('');
+  body.insertAdjacentHTML('beforeend',
+    `<div class="chat-opts" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:2px;margin-left:34px">${opts}</div>`);
+  // 스크롤 맨 아래로
+  const sc=$('chatScroll'); setTimeout(()=>{sc.scrollTop=sc.scrollHeight;},50);
+}
+function chatPick(key,label){
+  // 이전 선택지 버튼 제거
+  document.querySelectorAll('.chat-opts').forEach(e=>e.remove());
+  chatFlow._lastLabel=label;
+  chatStep(key,false);
+}
+
+
+
+/* ============ 드로어 ============ */
+function renderDrawer(){
+  $('drawer').innerHTML=`
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 42% 35%,#d6ffa8,var(--sprout-bright),#4f9e2e);border:2.5px solid #3a7a26;display:grid;place-items:center;font-size:26px">${S.avatar}</div>
+      <div><b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;font-size:16px">${S.name}</b><div style="margin-top:3px"><span class="pill" style="font-size:9px;padding:2px 8px">Lv.${S.level} 알뜰탐험가</span></div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:9px;background:var(--panel);border:1.5px solid var(--line2);border-radius:13px;padding:10px;margin-top:14px">
+      <div class="coin" style="width:22px;height:22px"></div><div style="flex:1"><div class="sub" style="font-size:9px">내 지갑</div><b style="font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Segoe UI',sans-serif;font-weight:800;color:var(--gold)"><span data-seeds>${S.seeds}</span> 씨앗</b></div><span class="sub" style="font-size:9px">저금 ${S.saved}</span>
+    </div>
+    <div class="dsep"></div>
+    ${[['home','🏠','홈'],['ar','🔭','AR 탐험'],['garden','🪴','투자 정원'],['shop','🏪','상점'],['goal','🎯','내 목표'],['my','👤','마이페이지']].map(([k,i,l])=>
+      `<div class="dmenu" onclick="go('${k}')"><span class="di">${i}</span>${l}</div>`).join('')}
+    <div class="dsep"></div>
+    <div class="dmenu" onclick="go('notifications')"><span class="di">🔔</span>알림</div>
+    <div class="dmenu" onclick="go('settings')"><span class="di">⚙️</span>설정</div>
+    <div class="dmenu" onclick="go('help')"><span class="di">❓</span>도움말</div>
+    <div class="dsep"></div>
+    <div class="dmenu" style="color:#e08a8a" onclick="go('login')"><span class="di">🚪</span>로그아웃</div>
+    <div class="sub" style="text-align:center;font-size:8.5px;margin-top:10px">새싹테라스 v1.0.0</div>`;
+}
+
+/* ============ 시작 ============ */
+startOnboarding();
+
+</script>
+</body>
+</html>
